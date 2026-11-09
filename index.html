@@ -59,7 +59,7 @@ button { font: inherit; color: inherit; }
 @media (max-width: 640px) { .appbar nav a.hide-sm, .appbar .pill { display: none; } }
 
 /* hero */
-.hero .in { max-width: 1040px; margin: 0 auto; display: grid; grid-template-columns: 1fr 360px; gap: 56px; align-items: center; padding-block: 48px 40px; }
+.hero .in { max-width: 1080px; margin: 0 auto; display: grid; grid-template-columns: 1fr 440px; gap: 56px; align-items: center; padding-block: 48px 40px; }
 .hero h1 { font-size: clamp(46px, 7.5vw, 88px); line-height: .94; }
 .hero h1 em { font-style: normal; color: var(--curtida-ink); }
 .hero .lede { font-size: 18px; color: var(--muted); max-width: 36ch; margin-top: 20px; }
@@ -103,7 +103,7 @@ button { font: inherit; color: inherit; }
 .phone .acts { display: flex; align-items: center; gap: 12px; padding: 12px 2px 6px; font-size: 12px; font-weight: 600; }
 .phone .acts .ico { width: 21px; height: 21px; }
 .phone .acts .heart { fill: var(--curtida); stroke: var(--curtida); }
-.phone .acts .n { display: inline-flex; align-items: center; gap: 4px; }
+.phone .acts .n { white-space: nowrap; display: inline-flex; align-items: center; gap: 4px; }
 .phone .acts .save { margin-left: auto; }
 .phone .cap { font-size: 12px; line-height: 1.35; padding: 0 2px; overflow-wrap: anywhere; }
 .phone .cap b { font-weight: 700; margin-right: 4px; }
@@ -116,6 +116,27 @@ button { font: inherit; color: inherit; }
   @keyframes glow { 50% { box-shadow: 0 0 0 4px var(--luz), 0 0 70px 6px rgba(255, 208, 122, .55); } }
 }
 
+
+/* parede de exemplo atrás do espelho do topo */
+.wall { position: relative; isolation: isolate; width: 100%; max-width: 460px; margin: 0 auto; border-radius: 22px; overflow: hidden; padding: 34px 58px 78px; box-sizing: border-box;
+  background: radial-gradient(60% 45% at 50% 38%, #F7EBD2 0%, rgba(247,235,210,0) 70%), linear-gradient(180deg, #EEE6D8 0%, #E3D8C5 100%); }
+.wall::before { content: ""; position: absolute; inset: 0; z-index: -1; background: repeating-linear-gradient(90deg, rgba(120,90,50,.035) 0 1px, transparent 1px 7px); }
+.wall .floor { position: absolute; left: 0; right: 0; bottom: 0; height: 62px; z-index: 0;
+  background: repeating-linear-gradient(90deg, #8E5F3D 0 118px, #7F5334 118px 120px), #8E5F3D; border-top: 9px solid #FBF8F2; box-shadow: 0 -2px 0 rgba(0,0,0,.06); }
+.wall .floor::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,.18), rgba(0,0,0,0) 60%); }
+.wall .phone { position: relative; z-index: 1; width: 100%; box-shadow: 0 0 0 4px var(--luz), 16px 26px 44px -10px rgba(60,38,18,.5); }
+.wall .plant { position: absolute; left: -6px; bottom: 30px; width: 104px; height: auto; z-index: 2; }
+.wall .lamp { position: absolute; left: 10px; top: 0; width: 46px; height: auto; z-index: 0; }
+.wall .tag { position: absolute; left: 50%; transform: translateX(-50%); bottom: 18px; white-space: nowrap; z-index: 2; background: rgba(255,255,255,.92); color: #14231A; border-radius: 999px; padding: 6px 12px; font: 700 11px/14px var(--sans); letter-spacing: .04em; box-shadow: 0 4px 14px -6px rgba(0,0,0,.3); }
+.wall .dim { position: absolute; right: 24px; top: 34px; bottom: 78px; width: 12px; z-index: 0; border-right: 1.5px solid rgba(60,45,30,.45); }
+.wall .dim::before, .wall .dim::after { content: ""; position: absolute; right: -6px; width: 11px; border-top: 1.5px solid rgba(60,45,30,.45); }
+.wall .dim::before { top: 0; } .wall .dim::after { bottom: 0; }
+.wall .dim span { position: absolute; right: 6px; top: 50%; transform: translateY(-50%) rotate(-90deg); transform-origin: right center; white-space: nowrap; font: 700 10px/1 var(--sans); color: rgba(60,45,30,.7); letter-spacing: .06em; }
+@media (max-width: 480px) { .wall { padding: 26px 40px 70px; border-radius: 18px; } .wall .plant { width: 78px; } .wall .dim { right: 14px; bottom: 70px; } .wall .tag { bottom: 16px; } .wall .lamp { display: none; } }
+@media (prefers-reduced-motion: no-preference) {
+  .hero .wall .phone { animation: glow-wall 4s ease-in-out infinite; }
+  @keyframes glow-wall { 50% { box-shadow: 0 0 0 4px var(--luz), 0 0 60px 8px rgba(255, 208, 122, .6), 16px 26px 44px -10px rgba(60,38,18,.5); } }
+}
 /* stories */
 .stories { border-block: 1px solid var(--line); background: var(--card); }
 .stories .in { max-width: 1040px; margin: 0 auto; display: flex; gap: 18px; overflow-x: auto; padding-block: 16px; scrollbar-width: none; }
@@ -306,7 +327,24 @@ footer { text-align: center; color: var(--muted); font-size: 13px; padding-block
           <a class="pill ghost" href="#personalize">Ver com o meu nome</a>
         </div>
       </div>
-      <div class="phone-wrap">
+      <div class="phone-wrap wall" aria-label="Exemplo do espelho instalado na parede">
+        <div class="floor" aria-hidden="true"></div>
+        <span class="dim" aria-hidden="true"><span>120 cm</span></span>
+        <svg class="plant" viewBox="0 0 120 170" aria-hidden="true">
+          <path d="M60 104 C40 70 18 62 6 66 C22 74 38 88 52 108Z" fill="#3E8A5C"/>
+          <path d="M60 104 C80 66 104 58 116 62 C98 72 82 88 68 108Z" fill="#2F6B47"/>
+          <path d="M60 106 C52 60 58 26 66 8 C70 34 70 70 64 108Z" fill="#3E8A5C"/>
+          <path d="M60 106 C42 84 26 44 30 24 C44 46 54 76 64 106Z" fill="#2F6B47"/>
+          <path d="M60 106 C76 82 90 46 88 28 C76 50 66 78 58 106Z" fill="#4C9E6A"/>
+          <path d="M34 104 H86 L80 166 H40 Z" fill="#C9B79C"/>
+          <path d="M30 100 H90 V112 H30 Z" fill="#B9A585"/>
+        </svg>
+        <svg class="lamp" viewBox="0 0 46 120" aria-hidden="true">
+          <path d="M23 0 V70" stroke="#14231A" stroke-width="2"/>
+          <path d="M6 88 A17 17 0 0 1 40 88 Z" fill="#FF5B4A"/>
+          <ellipse cx="23" cy="92" rx="18" ry="10" fill="#FFD07A" opacity=".55"/>
+        </svg>
+        <span class="tag">Exemplo · parede de café</span>
         <div class="phone" aria-label="Espelho Curtib.a com moldura de post">
           <div class="status"><span>14:52</span><span class="island"><i></i><i></i></span><span class="sig"><svg viewBox="0 0 15 12" fill="currentColor"><rect x="0" y="8" width="3" height="4" rx=".6"/><rect x="4" y="5.5" width="3" height="6.5" rx=".6"/><rect x="8" y="3" width="3" height="9" rx=".6"/><rect x="12" y="0" width="3" height="12" rx=".6"/></svg><span class="batt"><b></b></span></span></div>
           <div class="who"><span class="avatar logo-av"><svg viewBox="0 0 48 72" class="mark"><use href="#m"/></svg></span><span class="name"><span>curtib.a</span><svg class="badge" viewBox="0 0 16 16"><use href="#i-badge"/></svg></span><span class="dots">•••</span></div>
