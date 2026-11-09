@@ -1,0 +1,561 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Curtib.a: espelhos com LED e moldura de post com a marca do seu negócio. Feito em Curitiba.">
+<meta property="og:title" content="Curtib.a · Sua parede virou post">
+<meta property="og:description" content="Espelho com LED 60 × 120 cm com o nome e a logo do seu negócio. Monte o seu e peça orçamento.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231E4D33'/%3E%3Cg transform='translate(20 8) scale(.67)' fill='none' stroke='white' stroke-width='5' stroke-linecap='round'%3E%3Crect x='3' y='3' width='42' height='66' rx='14'/%3E%3Cpath d='M17 20 Q24 27 31 20M13 29 Q24 39 35 29M10 38 Q24 50 38 38M24 44 V50'/%3E%3Ccircle cx='24' cy='59' r='4' fill='%23FF5B4A' stroke='none'/%3E%3C/g%3E%3C/svg%3E">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Curtib.a</title>
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=DM+Sans:opsz,wght@9..40,400..700&display=swap">
+<style>
+/* Layout: o site é um feed. Barra de app no topo, stories, e cada seção é um post em uma coluna de 600px; o hero mostra o espelho igual à moldura de post. No celular, barra de navegação fixa embaixo. */
+:root {
+  --bg: #FAFAFA; --card: #FFFFFF; --line: #E6E8E4; --ink: #111712; --muted: #6B736D;
+  --araucaria: #1E4D33; --araucaria-soft: #E3EDE6; --on-araucaria: #FFFFFF;
+  --curtida: #FF4B3A; --on-curtida: #111712; --curtida-ink: #C2321F;
+  --verified: #1E4D33; --luz: #FFD07A; --glass: #DFE4E1; --glass-hi: #F3F6F4;
+  --display: "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
+  --sans: "DM Sans", ui-sans-serif, system-ui, -apple-system, sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0B0F0C; --card: #121813; --line: #232B25; --ink: #F1F3F0; --muted: #98A29B;
+  --araucaria: #7FC79A; --araucaria-soft: #17261C; --on-araucaria: #0B0F0C;
+  --curtida: #FF6B5B; --on-curtida: #0B0F0C; --curtida-ink: #FF8A7D; --verified: #7FC79A;
+  --glass: #77837C; --glass-hi: #9AA69F; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #0B0F0C; --card: #121813; --line: #232B25; --ink: #F1F3F0; --muted: #98A29B;
+  --araucaria: #7FC79A; --araucaria-soft: #17261C; --on-araucaria: #0B0F0C;
+  --curtida: #FF6B5B; --on-curtida: #0B0F0C; --curtida-ink: #FF8A7D; --verified: #7FC79A;
+  --glass: #77837C; --glass-hi: #9AA69F; color-scheme: dark }
+
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font: 400 15px/1.5 var(--sans); }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--card); }
+.gutter { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+h1, h2, h3 { font-family: var(--display); font-weight: 800; letter-spacing: -.03em; line-height: 1.02; margin: 0; text-wrap: balance; }
+p { margin: 0; }
+a { color: inherit; }
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 3px solid var(--curtida); outline-offset: 2px; border-radius: 6px; }
+.ico { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+.mark { fill: none; stroke: currentColor; stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; }
+
+/* app bar */
+.appbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 6; background: var(--card); border-bottom: 1px solid var(--line); }
+.appbar .in { max-width: 1040px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-block: 10px; }
+.lockup { display: inline-flex; align-items: center; gap: .3em; font: 800 26px/1 var(--display); letter-spacing: -.04em; color: var(--araucaria); text-decoration: none; }
+.lockup svg { height: 1.2em; width: auto; }
+.appbar nav { display: flex; align-items: center; gap: 4px; }
+.appbar nav a { display: inline-flex; padding: 8px; border-radius: 50%; color: var(--ink); }
+.appbar nav a:hover { background: var(--bg); }
+.pill { display: inline-flex; align-items: center; gap: 8px; border: 0; border-radius: 999px; padding: 10px 18px; font: 700 14px/18px var(--sans); background: var(--curtida); color: var(--on-curtida); text-decoration: none; cursor: pointer; }
+.pill.dark { background: var(--ink); color: var(--card); }
+.pill.ghost { background: transparent; color: var(--ink); box-shadow: inset 0 0 0 1.5px var(--line); }
+@media (max-width: 640px) { .appbar nav a.hide-sm, .appbar .pill { display: none; } }
+
+/* hero */
+.hero .in { max-width: 1040px; margin: 0 auto; display: grid; grid-template-columns: 1fr 360px; gap: 56px; align-items: center; padding-block: 48px 40px; }
+.hero h1 { font-size: clamp(46px, 7.5vw, 88px); line-height: .94; }
+.hero h1 em { font-style: normal; color: var(--curtida-ink); }
+.hero .lede { font-size: 18px; color: var(--muted); max-width: 36ch; margin-top: 20px; }
+.hero .ctas { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 28px; }
+.hero .ctas .pill { padding: 14px 22px; font-size: 15px; }
+.hero .chip { display: inline-flex; align-items: center; gap: 8px; font: 700 12px/16px var(--sans); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin-bottom: 18px; }
+.hero .chip i { width: 8px; height: 8px; border-radius: 50%; background: var(--curtida); }
+@media (max-width: 860px) { .hero .in { grid-template-columns: 1fr; gap: 36px; padding-block: 32px; } .hero .phone-wrap { order: -1; } }
+
+/* ===== o espelho (igual à moldura de post) ===== */
+.phone-wrap { display: flex; justify-content: center; }
+.phone { --frame: #FFFFFF; --frame-ink: #111712; width: min(330px, 100%); aspect-ratio: 1 / 2; background: var(--frame); color: var(--frame-ink); border-radius: 30px; padding: 14px 18px 10px; display: flex; flex-direction: column; box-shadow: 0 0 0 4px var(--luz), 0 18px 50px -12px rgba(17, 23, 18, .35); transition: background .3s, color .3s; container-type: inline-size; }
+.phone .status { display: flex; align-items: center; justify-content: space-between; font: 600 12px/1 var(--sans); padding: 2px 8px 0; }
+.phone .island { width: 92px; height: 24px; border-radius: 999px; background: currentColor; display: flex; justify-content: flex-end; align-items: center; gap: 4px; padding-right: 10px; }
+.phone .island i { width: 6px; height: 6px; border-radius: 50%; background: var(--frame); }
+.phone .sig { display: flex; gap: 4px; align-items: center; }
+.phone .sig svg { width: 15px; height: 12px; }
+.phone .batt { width: 20px; height: 10px; border-radius: 3px; border: 1.2px solid currentColor; padding: 1px; }
+.phone .batt b { display: block; height: 100%; width: 100%; border-radius: 1px; background: #6CCB5F; }
+.phone .who { display: flex; align-items: center; gap: 10px; padding: 16px 2px 12px; min-width: 0; }
+.avatar { width: 42px; height: 42px; border-radius: 50%; flex: none; background: var(--av, #1E4D33); color: #fff; display: grid; place-items: center; font: 800 17px/1 var(--display); overflow: hidden; }
+.avatar svg { width: 46%; height: auto; }
+.phone .name { font-weight: 700; font-size: 14px; display: flex; align-items: center; gap: 4px; min-width: 0; }
+.phone .name span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.badge { width: 15px; height: 15px; flex: none; }
+.badge { fill: var(--verified); stroke: #FFFFFF; stroke-width: 0; }
+.phone .dots { margin-left: auto; letter-spacing: 2px; font-weight: 800; font-size: 18px; line-height: 1; }
+.phone .glass { flex: 1; border-radius: 4px; background: var(--glass); position: relative; overflow: hidden; margin: 0 -6px; }
+.phone .glass i { position: absolute; top: -30%; height: 160%; background: var(--glass-hi); transform: rotate(28deg); }
+.phone .glass i:nth-child(1) { left: 22%; width: 13%; } .phone .glass i:nth-child(2) { left: 42%; width: 4%; }
+.phone .glass .scene { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.phone .glass i { opacity: .28; background: #FFFFFF !important; }
+.logo-av { --av: #1E4D33; color: #FFFFFF; }
+.logo-av svg { width: auto !important; height: 62%; stroke-width: 5.5; }
+.phone .tabbar .logo-me { display: grid; place-items: center; background: #1E4D33; color: #FFFFFF; }
+.logo-me svg { height: 70%; width: auto; stroke-width: 7; }
+.lockup .word { white-space: nowrap; }
+.lockup .dot { display: inline-block; width: .2em; height: .2em; border-radius: 50%; background: var(--curtida); margin: 0 .04em; }
+.phone .glass span { position: absolute; left: 50%; bottom: 12px; transform: translateX(-50%); font: 700 10px/1 var(--sans); letter-spacing: .12em; text-transform: uppercase; color: #6B736D; white-space: nowrap; }
+.phone .acts { display: flex; align-items: center; gap: 12px; padding: 12px 2px 6px; font-size: 12px; font-weight: 600; }
+.phone .acts .ico { width: 21px; height: 21px; }
+.phone .acts .heart { fill: var(--curtida); stroke: var(--curtida); }
+.phone .acts .n { display: inline-flex; align-items: center; gap: 4px; }
+.phone .acts .save { margin-left: auto; }
+.phone .cap { font-size: 12px; line-height: 1.35; padding: 0 2px; overflow-wrap: anywhere; }
+.phone .cap b { font-weight: 700; margin-right: 4px; }
+.phone .when { font-size: 11px; opacity: .55; padding: 4px 2px 0; }
+.phone .tabbar { display: flex; justify-content: space-around; align-items: center; padding: 10px 0 2px; margin-top: auto; }
+.phone .tabbar .ico { width: 21px; height: 21px; }
+.phone .tabbar .me { width: 22px; height: 22px; border-radius: 50%; background: var(--av, #1E4D33); }
+@media (prefers-reduced-motion: no-preference) {
+  .hero .phone { animation: glow 4s ease-in-out infinite; }
+  @keyframes glow { 50% { box-shadow: 0 0 0 4px var(--luz), 0 0 70px 6px rgba(255, 208, 122, .55); } }
+}
+
+/* stories */
+.stories { border-block: 1px solid var(--line); background: var(--card); }
+.stories .in { max-width: 1040px; margin: 0 auto; display: flex; gap: 18px; overflow-x: auto; padding-block: 16px; scrollbar-width: none; }
+.story { display: flex; flex-direction: column; align-items: center; gap: 6px; flex: none; width: 76px; font-size: 12px; text-align: center; }
+.story .ring { width: 68px; height: 68px; border-radius: 50%; padding: 3px; background: conic-gradient(var(--curtida), var(--luz), var(--araucaria), var(--curtida)); }
+.story .ring div { width: 100%; height: 100%; border-radius: 50%; background: var(--araucaria-soft); border: 3px solid var(--card); display: grid; place-items: center; color: var(--araucaria); }
+.story .ring svg { width: 28px; height: 28px; }
+
+/* feed */
+.feed { max-width: 600px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; padding-block: 28px 120px; }
+.post { background: var(--card); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; scroll-margin-top: 80px; }
+.post-head { display: flex; align-items: center; gap: 10px; padding: 12px 14px; }
+.post-head .avatar { width: 36px; height: 36px; --av: var(--araucaria); color: var(--on-araucaria); }
+.post-head .meta { display: flex; flex-direction: column; min-width: 0; }
+.post-head .meta b { font-size: 14px; display: inline-flex; align-items: center; gap: 4px; }
+.post-head .meta small { font-size: 12px; color: var(--muted); }
+.post-head .more { margin-left: auto; font-weight: 800; letter-spacing: 2px; color: var(--muted); }
+.post-body { padding: 0 14px 16px; }
+.post-body h2 { font-size: clamp(28px, 5vw, 38px); margin-bottom: 10px; }
+.post-body > p { color: var(--muted); font-size: 15px; }
+.post-acts { display: flex; align-items: center; gap: 14px; padding: 10px 12px 4px; border-top: 1px solid var(--line); }
+.post-acts button { display: inline-flex; align-items: center; gap: 5px; background: none; border: 0; padding: 4px; cursor: pointer; font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.post-acts button.liked .ico { fill: var(--curtida); stroke: var(--curtida); }
+@media (prefers-reduced-motion: no-preference) { .post-acts button.liked .ico { animation: pop .3s ease; } @keyframes pop { 50% { transform: scale(1.3); } } }
+.post-acts .save { margin-left: auto; }
+.post-cap { padding: 2px 14px 14px; font-size: 14px; }
+.post-cap b { margin-right: 4px; }
+.post-cap .tags { color: var(--araucaria); }
+.post-cap small { display: block; color: var(--muted); font-size: 12px; margin-top: 4px; }
+
+/* carrossel: como funciona */
+.slides { display: flex; gap: 10px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 0 14px 6px; scrollbar-width: none; }
+.slide { scroll-snap-align: start; flex: 0 0 82%; aspect-ratio: 4 / 5; max-width: 100%; border-radius: 12px; padding: 22px; display: flex; flex-direction: column; justify-content: space-between; }
+.slide:nth-child(1) { background: var(--araucaria); color: var(--on-araucaria); }
+.slide:nth-child(2) { background: var(--araucaria-soft); color: var(--ink); }
+.slide:nth-child(3) { background: var(--curtida); color: var(--on-curtida); }
+.slide:nth-child(4) { background: var(--ink); color: var(--card); }
+.slide .num { font: 800 64px/1 var(--display); letter-spacing: -.04em; }
+.slide h3 { font-size: 30px; }
+.slide p { font-size: 15px; margin-top: 8px; opacity: .85; }
+.dots-row { display: flex; justify-content: center; gap: 5px; padding-top: 8px; }
+.dots-row i { width: 6px; height: 6px; border-radius: 50%; background: var(--line); }
+.dots-row i.on { background: var(--araucaria); }
+
+/* personalizar */
+.custom { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start; }
+.custom .phone { width: 100%; }
+.fields { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+label, .lbl { font-weight: 700; font-size: 13px; display: block; margin-bottom: 6px; }
+input[type=text], select, textarea { width: 100%; font: 400 15px/1.4 var(--sans); padding: 11px 12px; border-radius: 10px; border: 1.5px solid var(--line); background: var(--bg); color: var(--ink); }
+input[type=text]:focus, select:focus, textarea:focus { outline: none; border-color: var(--araucaria); }
+.sw { display: flex; gap: 8px; flex-wrap: wrap; }
+.sw input { position: absolute; opacity: 0; pointer-events: none; }
+.sw label { margin: 0; width: 38px; height: 38px; border-radius: 50%; cursor: pointer; box-shadow: inset 0 0 0 1px rgba(0,0,0,.18); }
+.sw input:checked + label { box-shadow: 0 0 0 2px var(--card), 0 0 0 4px var(--ink); }
+.sw input:focus-visible + label { outline: 3px solid var(--curtida); outline-offset: 5px; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.phone .tabbar .me { background-size: cover; background-position: center; }
+.upload { display: flex; align-items: center; gap: 12px; }
+.up-thumb { width: 52px; height: 52px; --av: var(--araucaria); color: var(--on-araucaria); border: 1px solid var(--line); }
+.up-btns { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.up-pick { margin: 0; cursor: pointer; padding: 9px 14px; font-size: 13px; }
+#f-logo:focus-visible + .up-pick { outline: 3px solid var(--curtida); outline-offset: 2px; }
+.up-clear { background: none; border: 0; color: var(--curtida-ink); font-weight: 700; font-size: 13px; cursor: pointer; padding: 6px; }
+.up-hint { font-size: 12px; color: var(--muted); margin-top: 6px; }
+.nums { display: grid; grid-template-columns: auto 1fr; gap: 8px 10px; align-items: center; }
+.nums label { margin: 0; display: inline-flex; }
+.nums input { font-variant-numeric: tabular-nums; }
+.wa-end { grid-column: 1 / -1; display: grid; gap: 8px; }
+.wa-btn { justify-content: center; padding: 14px 18px; font-size: 15px; }
+.up-thumb.logo-av { color: #FFFFFF; background: #1E4D33; }
+.up-thumb.logo-av svg { height: 62%; width: auto; stroke-width: 5.5; }
+#pv-av.logo-av svg { height: 62%; width: auto; stroke-width: 5.5; }
+@media (max-width: 560px) { .custom { grid-template-columns: 1fr; } .custom .phone { width: min(300px, 100%); margin: 0 auto; } }
+
+/* ficha */
+.specs { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px; }
+.specs div { background: var(--bg); border-radius: 10px; padding: 12px 14px; min-width: 0; }
+.specs dt { font: 700 11px/14px var(--sans); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.specs dd { margin: 4px 0 0; font: 700 18px/1.25 var(--display); }
+@media (max-width: 400px) { .specs { grid-template-columns: 1fr; } }
+
+/* direct (orçamento) */
+.dm { display: flex; flex-direction: column; gap: 10px; padding: 0 14px 16px; }
+.bubble { max-width: 85%; padding: 10px 14px; border-radius: 18px; font-size: 14px; }
+.bubble.them { background: var(--bg); border: 1px solid var(--line); align-self: flex-start; border-bottom-left-radius: 6px; }
+.bubble.me { background: var(--araucaria); color: var(--on-araucaria); align-self: flex-end; border-bottom-right-radius: 6px; white-space: pre-line; }
+.dm form { display: grid; gap: 12px; margin-top: 6px; }
+.dm .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.dm .send { justify-self: end; }
+.result { display: grid; gap: 8px; }
+.result a.pill { justify-self: end; }
+.phone-num { user-select: all; font-weight: 700; }
+.err { color: var(--curtida-ink); font-size: 13px; font-weight: 600; }
+@media (max-width: 440px) { .dm .row2 { grid-template-columns: 1fr; } }
+
+/* comentários (faq) */
+.comments { padding: 0 14px 10px; display: flex; flex-direction: column; }
+.cmt { display: flex; gap: 10px; padding: 10px 0; border-top: 1px solid var(--line); }
+.cmt:first-child { border-top: 0; }
+.cmt .avatar { width: 30px; height: 30px; font-size: 13px; }
+.cmt div { min-width: 0; }
+.cmt p { font-size: 14px; }
+.cmt p b { margin-right: 4px; }
+.cmt .reply { margin-top: 8px; padding-left: 12px; border-left: 2px solid var(--araucaria-soft); color: var(--ink); }
+.cmt small { color: var(--muted); font-size: 12px; }
+
+/* barra inferior (celular) */
+.bottombar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 6; background: var(--card); border-top: 1px solid var(--line); display: none; justify-content: space-around; padding-top: 10px; padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px)); padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.bottombar a { color: var(--ink); display: inline-flex; padding: 4px 10px; }
+.bottombar .me { width: 26px; height: 26px; border-radius: 50%; background: var(--curtida); display: grid; place-items: center; color: var(--on-curtida); }
+.bottombar .me svg { width: 16px; height: 16px; }
+@media (max-width: 640px) { .bottombar { display: flex; } }
+
+footer { text-align: center; color: var(--muted); font-size: 13px; padding-block: 0 40px; }
+@media (max-width: 640px) { footer { padding-bottom: 100px; } }
+</style>
+</head>
+<body>
+
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="m" viewBox="0 0 48 72"><rect x="3" y="3" width="42" height="66" rx="14"/><path d="M17 20 Q24 27 31 20"/><path d="M13 29 Q24 39 35 29"/><path d="M10 38 Q24 50 38 38"/><path d="M24 44 V50"/><circle cx="24" cy="59" r="4" fill="#FF5B4A" stroke="none"/></symbol>
+  <symbol id="scene" viewBox="0 0 300 480">
+    <defs><filter id="neon" x="-20%" y="-50%" width="140%" height="200%"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+    <rect width="300" height="480" fill="#EADFCF"/>
+    <rect y="300" width="300" height="180" fill="#1E4D33"/>
+    <rect y="296" width="300" height="6" fill="#7A3E22"/>
+    <g fill="none" stroke="#1E4D33" stroke-width="1.5" opacity=".18"><path d="M0 240h300"/></g>
+    <path d="M60 0V72M240 0V72" stroke="#14231A" stroke-width="2"/>
+    <circle cx="60" cy="88" r="26" fill="#FFD07A" opacity=".4"/><circle cx="240" cy="88" r="26" fill="#FFD07A" opacity=".4"/>
+    <path d="M42 86a18 14 0 0 1 36 0z" fill="#FF5B4A"/><path d="M222 86a18 14 0 0 1 36 0z" fill="#FF5B4A"/>
+    <rect x="44" y="118" width="212" height="66" rx="14" fill="#14231A"/>
+    <text x="150" y="164" text-anchor="middle" font-family="Bricolage Grotesque, sans-serif" font-weight="800" font-size="40" letter-spacing="-1.5" filter="url(#neon)" fill="#FFD07A">curtib<tspan fill="#FF5B4A">.</tspan>a</text>
+    <rect x="218" y="200" width="62" height="80" rx="6" fill="#F7F2EA" stroke="#7A3E22" stroke-width="4"/>
+    <g fill="none" stroke="#1E4D33" stroke-width="4" stroke-linecap="round"><path d="M238 222q11 8 22 0M233 235q16 12 32 0M229 248q20 15 40 0M249 254v14"/></g>
+    <rect x="16" y="246" width="54" height="52" rx="6" fill="#7A3E22"/>
+    <g fill="#2F6B47"><ellipse cx="30" cy="222" rx="10" ry="30" transform="rotate(-25 30 222)"/><ellipse cx="56" cy="218" rx="10" ry="32" transform="rotate(22 56 218)"/></g>
+    <g fill="#3E8A5C"><ellipse cx="43" cy="208" rx="9" ry="36"/><ellipse cx="20" cy="240" rx="8" ry="20" transform="rotate(-55 20 240)"/><ellipse cx="66" cy="240" rx="8" ry="20" transform="rotate(55 66 240)"/></g>
+    <path d="M100 330 Q96 250 112 236 L188 236 Q204 250 200 330 Z" fill="#2B1D16"/>
+    <rect x="137" y="286" width="26" height="40" fill="#B97E5A"/>
+    <path d="M62 480 Q66 340 150 320 Q234 340 238 480 Z" fill="#FF5B4A"/>
+    <path d="M128 322 Q150 344 172 322" fill="none" stroke="#B97E5A" stroke-width="6"/>
+    <ellipse cx="150" cy="262" rx="34" ry="40" fill="#C68E6A"/>
+    <path d="M114 260 Q112 214 150 210 Q190 212 186 258 Q174 232 150 232 Q126 234 114 260 Z" fill="#2B1D16"/>
+    <path d="M150 300 Q156 304 162 300" fill="none" stroke="#7A3E22" stroke-width="3" stroke-linecap="round"/>
+    <path d="M214 400 Q228 312 190 270" fill="none" stroke="#C68E6A" stroke-width="28" stroke-linecap="round"/>
+    <g transform="rotate(-8 166 258)"><rect x="140" y="214" width="54" height="96" rx="11" fill="#111712"/><circle cx="152" cy="228" r="5" fill="#2C3530"/><circle cx="152" cy="243" r="5" fill="#2C3530"/><circle cx="166" cy="235" r="5" fill="#2C3530"/></g>
+    <circle cx="192" cy="276" r="15" fill="#C68E6A"/>
+  </symbol>
+  <symbol id="tree" viewBox="0 0 48 48"><path d="M16 14 Q24 20 32 14"/><path d="M11 22 Q24 31 37 22"/><path d="M7 30 Q24 41 41 30"/><path d="M24 35 V45"/></symbol>
+  <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 20.5s-7.5-4.6-9.3-9.2C1.4 7.9 3.6 4.5 7 4.5c2 0 3.6 1.1 5 3 1.4-1.9 3-3 5-3 3.4 0 5.6 3.4 4.3 6.8-1.8 4.6-9.3 9.2-9.3 9.2z"/></symbol>
+  <symbol id="i-cmt" viewBox="0 0 24 24"><path d="M20.5 12a8.5 8.5 0 0 1-12.6 7.4L3.5 20.5l1.1-4.2A8.5 8.5 0 1 1 20.5 12z"/></symbol>
+  <symbol id="i-rep" viewBox="0 0 24 24"><path d="M4 9.5V8a3 3 0 0 1 3-3h12l-3-3M20 14.5V16a3 3 0 0 1-3 3H5l3 3"/></symbol>
+  <symbol id="i-send" viewBox="0 0 24 24"><path d="M21.5 2.5 10.5 13.5M21.5 2.5l-7 19-4-8-8-4z"/></symbol>
+  <symbol id="i-save" viewBox="0 0 24 24"><path d="M18.5 21 12 15.5 5.5 21V4a1 1 0 0 1 1-1h11a1 1 0 0 1 1 1z"/></symbol>
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="M3.5 10.5 12 3.5l8.5 7V20a.5.5 0 0 1-.5.5h-5v-6h-6v6H4a.5.5 0 0 1-.5-.5z"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/><path d="M3 8.5h18M8.5 3l3 5.5M14 3l3 5.5M10 12v5l4.5-2.5z"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7.5"/><path d="m21 21-4.5-4.5"/></symbol>
+  <symbol id="i-brush" viewBox="0 0 24 24"><path d="M14.5 4.5 19.5 9.5 10 19H5v-5z"/><path d="M12.5 6.5l5 5"/></symbol>
+  <symbol id="i-ruler" viewBox="0 0 24 24"><rect x="2.5" y="7.5" width="19" height="9" rx="2"/><path d="M7 7.5v3M11 7.5v4M15 7.5v3M19 7.5v3"/></symbol>
+  <symbol id="i-badge" viewBox="0 0 16 16"><circle cx="8" cy="8" r="8"/><path d="m4.6 8.2 2.3 2.2 4.5-4.6" fill="none" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+</svg>
+
+<header class="appbar gutter">
+  <div class="in">
+    <a class="lockup" href="#inicio"><svg viewBox="0 0 48 72" class="mark"><use href="#m"/></svg><span class="word">curtib<i class="dot"></i>a</span></a>
+    <nav aria-label="Seções">
+      <a class="hide-sm" href="#como-funciona" aria-label="Como funciona"><svg class="ico"><use href="#i-play"/></svg></a>
+      <a class="hide-sm" href="#personalize" aria-label="Personalize"><svg class="ico"><use href="#i-brush"/></svg></a>
+      <a class="hide-sm" href="#duvidas" aria-label="Dúvidas"><svg class="ico"><use href="#i-cmt"/></svg></a>
+      <a href="#orcamento" aria-label="Orçamento pelo direct"><svg class="ico"><use href="#i-send"/></svg></a>
+      <a class="pill" href="#orcamento" style="margin-left:8px;border-radius:999px;padding:10px 18px;color:var(--on-curtida)">Pedir orçamento</a>
+    </nav>
+  </div>
+</header>
+
+<main id="inicio">
+  <section class="hero gutter">
+    <div class="in">
+      <div>
+        <span class="chip"><i></i>Espelho com LED · 60 × 120 cm</span>
+        <h1>Sua parede virou <em>post.</em></h1>
+        <p class="lede">Um espelho do tamanho de uma pessoa, com moldura de post e o nome do seu negócio. O cliente se vê no "feed", tira a foto e marca você.</p>
+        <div class="ctas">
+          <a class="pill" href="#orcamento">Quero o meu</a>
+          <a class="pill ghost" href="#personalize">Ver com o meu nome</a>
+        </div>
+      </div>
+      <div class="phone-wrap">
+        <div class="phone" aria-label="Espelho Curtib.a com moldura de post">
+          <div class="status"><span>14:52</span><span class="island"><i></i><i></i></span><span class="sig"><svg viewBox="0 0 15 12" fill="currentColor"><rect x="0" y="8" width="3" height="4" rx=".6"/><rect x="4" y="5.5" width="3" height="6.5" rx=".6"/><rect x="8" y="3" width="3" height="9" rx=".6"/><rect x="12" y="0" width="3" height="12" rx=".6"/></svg><span class="batt"><b></b></span></span></div>
+          <div class="who"><span class="avatar logo-av"><svg viewBox="0 0 48 72" class="mark"><use href="#m"/></svg></span><span class="name"><span>curtib.a</span><svg class="badge" viewBox="0 0 16 16"><use href="#i-badge"/></svg></span><span class="dots">•••</span></div>
+          <div class="glass"><svg class="scene" viewBox="0 0 300 480" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><use href="#scene" width="300" height="480"/></svg><i></i><i></i></div>
+          <div class="acts"><span class="n"><svg class="ico heart"><use href="#i-heart"/></svg>12,4 mil</span><span class="n"><svg class="ico"><use href="#i-cmt"/></svg>386</span><span class="n"><svg class="ico"><use href="#i-rep"/></svg>94</span><svg class="ico"><use href="#i-send"/></svg><svg class="ico save"><use href="#i-save"/></svg></div>
+          <p class="cap"><b>curtib.a</b>Sua parede virou post ✨ Tira a foto e marca a gente!</p>
+          <p class="when">Há 1 hora</p>
+          <div class="tabbar"><svg class="ico"><use href="#i-home"/></svg><svg class="ico"><use href="#i-play"/></svg><svg class="ico"><use href="#i-send"/></svg><svg class="ico"><use href="#i-search"/></svg><span class="me logo-me"><svg viewBox="0 0 48 72" class="mark"><use href="#m"/></svg></span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="stories gutter" aria-label="Para quem é">
+    <div class="in">
+      <div class="story"><div class="ring"><div><svg viewBox="0 0 24 24" class="ico"><path d="M5 8h11v5a5 5 0 0 1-5 5h-1a5 5 0 0 1-5-5zM16 9.5h1.5a2.5 2.5 0 0 1 0 5H16M8 3.5c0 1 1 1 1 2M11 3.5c0 1 1 1 1 2"/></svg></div></div>Cafés</div>
+      <div class="story"><div class="ring"><div><svg viewBox="0 0 24 24" class="ico"><path d="M7 3v8M5 3v5a2 2 0 0 0 4 0V3M7 11v10M17 21V3c-2 0-3.5 2.5-3.5 6v4H17"/></svg></div></div>Restaurantes</div>
+      <div class="story"><div class="ring"><div><svg viewBox="0 0 24 24" class="ico"><circle cx="6" cy="18" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="M8 16.5 18.5 4M16 16.5 5.5 4"/></svg></div></div>Barbearias</div>
+      <div class="story"><div class="ring"><div><svg viewBox="0 0 24 24" class="ico"><path d="M12 21s-8-4.5-8-11a4.5 4.5 0 0 1 8-2.8A4.5 4.5 0 0 1 20 10c0 6.5-8 11-8 11zM9 11h6M12 8v6"/></svg></div></div>Clínicas</div>
+      <div class="story"><div class="ring"><div><svg viewBox="0 0 24 24" class="ico"><path d="M5 8h14l-1 12.5H6zM9 8V6a3 3 0 0 1 6 0v2"/></svg></div></div>Lojas</div>
+      <div class="story"><div class="ring"><div><svg viewBox="0 0 24 24" class="ico"><rect x="3" y="6.5" width="18" height="13" rx="3"/><circle cx="12" cy="13" r="3.5"/><path d="M8.5 6.5 10 4h4l1.5 2.5"/></svg></div></div>Studios</div>
+      <div class="story"><div class="ring"><div><svg viewBox="0 0 24 24" class="ico"><path d="M5.5 21 9 9l6 6-12 4.5zM14 4.5l1 1M19.5 9.5l-1-1M16 3l-.5 2.5M21 8l-2.5.5M12 9c1-2 3-3 5-3"/></svg></div></div>Eventos</div>
+      <div class="story"><div class="ring"><div><svg viewBox="0 0 48 48" class="mark" style="width:28px;height:28px;stroke-width:4"><use href="#tree"/></svg></div></div>Curitiba</div>
+    </div>
+  </div>
+
+  <div class="feed gutter">
+
+    <article class="post" id="como-funciona">
+      <div class="post-head"><span class="avatar"><svg viewBox="0 0 48 48" class="mark" style="stroke-width:4"><use href="#tree"/></svg></span><span class="meta"><b>curtib.a <svg class="badge" viewBox="0 0 16 16"><use href="#i-badge"/></svg></b><small>Curitiba, PR</small></span><span class="more">•••</span></div>
+      <div class="post-body"><h2>Do pedido à primeira marcação</h2><p>Arraste para o lado →</p></div>
+      <div class="slides" id="slides">
+        <div class="slide"><span class="num">1</span><div><h3>Monte a moldura</h3><p>Seu nome, sua logo, a legenda e os números de curtidas.</p></div></div>
+        <div class="slide"><span class="num">2</span><div><h3>Aprove a arte</h3><p>A prévia chega no seu WhatsApp. Ajuste o que quiser antes de produzir.</p></div></div>
+        <div class="slide"><span class="num">3</span><div><h3>A gente produz</h3><p>Espelho, LED e impressão feitos aqui em Curitiba.</p></div></div>
+        <div class="slide"><span class="num">4</span><div><h3>Instalou, postou</h3><p>Vai com kit de parede. Daí é só esperar as marcações.</p></div></div>
+      </div>
+      <div class="dots-row" id="slide-dots"><i class="on"></i><i></i><i></i><i></i></div>
+      <div class="post-acts"><button type="button" class="like" data-n="1284" aria-pressed="false"><svg class="ico"><use href="#i-heart"/></svg><span>1.284</span></button><button type="button"><svg class="ico"><use href="#i-cmt"/></svg>86</button><button type="button"><svg class="ico"><use href="#i-send"/></svg></button><button type="button" class="save" aria-label="Salvar"><svg class="ico"><use href="#i-save"/></svg></button></div>
+      <p class="post-cap"><b>curtib.a</b>Quatro passos e seu espaço vira cenário. <span class="tags">#curitiba #espelho #feitoemcuritiba</span><small>Há 2 horas</small></p>
+    </article>
+
+    <article class="post" id="personalize">
+      <div class="post-head"><span class="avatar"><svg viewBox="0 0 48 48" class="mark" style="stroke-width:4"><use href="#tree"/></svg></span><span class="meta"><b>curtib.a <svg class="badge" viewBox="0 0 16 16"><use href="#i-badge"/></svg></b><small>Personalize</small></span><span class="more">•••</span></div>
+      <div class="post-body">
+        <h2>Veja o espelho com a sua cara</h2>
+        <p style="margin-bottom:16px">Mude os campos e a moldura muda junto.</p>
+        <div class="custom">
+          <div class="fields">
+            <div><label for="f-nome">Nome no perfil</label><input type="text" id="f-nome" value="curtib.a" maxlength="24" autocomplete="off"></div>
+            <div><label for="f-leg">Legenda</label><input type="text" id="f-leg" value="Sua parede virou post ✨ Tira a foto e marca a gente!" maxlength="60" autocomplete="off"></div>
+            <div><span class="lbl">Sua logo ou foto de perfil</span>
+              <div class="upload">
+                <span class="avatar up-thumb logo-av" id="up-thumb"><svg viewBox="0 0 48 72" class="mark"><use href="#m"/></svg></span>
+                <div class="up-btns">
+                  <input type="file" id="f-logo" accept="image/*" class="sr">
+                  <label for="f-logo" class="pill ghost up-pick">Colocar a minha</label>
+                  <button type="button" class="up-clear" id="f-logo-clear" hidden>Voltar para a logo da Curtib.a</button>
+                </div>
+              </div>
+              <p class="up-hint">PNG ou JPG. A imagem fica só no seu aparelho, nada é enviado.</p>
+            </div>
+            <div><span class="lbl">Números do post</span>
+              <div class="nums">
+                <label for="f-likes"><svg class="ico"><use href="#i-heart"/></svg><span class="sr">Curtidas</span></label><input type="text" inputmode="numeric" id="f-likes" value="2.847" maxlength="9" aria-label="Curtidas">
+                <label for="f-cmts"><svg class="ico"><use href="#i-cmt"/></svg><span class="sr">Comentários</span></label><input type="text" inputmode="numeric" id="f-cmts" value="156" maxlength="9" aria-label="Comentários">
+                <label for="f-reps"><svg class="ico"><use href="#i-rep"/></svg><span class="sr">Reposts</span></label><input type="text" inputmode="numeric" id="f-reps" value="42" maxlength="9" aria-label="Reposts">
+              </div>
+            </div>
+            <div><label for="f-ideia">Sua ideia (opcional)</label><textarea id="f-ideia" rows="2" placeholder="Ex.: quero para a entrada da minha loja, com LED bem forte"></textarea></div>
+
+          </div>
+          <div class="phone" id="pv" aria-live="polite">
+            <div class="status"><span>14:52</span><span class="island"><i></i><i></i></span><span class="sig"><svg viewBox="0 0 15 12" fill="currentColor"><rect x="0" y="8" width="3" height="4" rx=".6"/><rect x="4" y="5.5" width="3" height="6.5" rx=".6"/><rect x="8" y="3" width="3" height="9" rx=".6"/><rect x="12" y="0" width="3" height="12" rx=".6"/></svg><span class="batt"><b></b></span></span></div>
+            <div class="who"><span class="avatar logo-av" id="pv-av"><svg viewBox="0 0 48 72" class="mark"><use href="#m"/></svg></span><span class="name"><span id="pv-nome">curtib.a</span><svg class="badge" viewBox="0 0 16 16"><use href="#i-badge"/></svg></span><span class="dots">•••</span></div>
+            <div class="glass"><svg class="scene" viewBox="0 0 300 480" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><use href="#scene" width="300" height="480"/></svg><i></i><i></i></div>
+            <div class="acts"><span class="n"><svg class="ico heart"><use href="#i-heart"/></svg><span id="pv-likes">2.847</span></span><span class="n"><svg class="ico"><use href="#i-cmt"/></svg><span id="pv-cmts">156</span></span><span class="n"><svg class="ico"><use href="#i-rep"/></svg><span id="pv-reps">42</span></span><svg class="ico"><use href="#i-send"/></svg><svg class="ico save"><use href="#i-save"/></svg></div>
+            <p class="cap"><b id="pv-nome2">curtib.a</b><span id="pv-leg">Sua parede virou post ✨ Tira a foto e marca a gente!</span></p>
+            <p class="when">Há 1 hora</p>
+            <div class="tabbar"><svg class="ico"><use href="#i-home"/></svg><svg class="ico"><use href="#i-play"/></svg><svg class="ico"><use href="#i-send"/></svg><svg class="ico"><use href="#i-search"/></svg><span class="me logo-me" id="pv-me"><svg viewBox="0 0 48 72" class="mark"><use href="#m"/></svg></span></div>
+          </div>
+          <div class="wa-end">
+            <a class="pill wa-btn" id="wa-idea" href="#" target="_blank" rel="noopener"><svg class="ico" style="width:18px;height:18px"><use href="#i-send"/></svg>Mandar minha ideia no WhatsApp</a>
+            <p style="font-size:12px;color:var(--muted)">A mensagem já vai pronta com o que você montou. Se não abrir, chama no <span class="phone-num">(41) 98757-4242</span>. A moldura é sempre branca.</p>
+          </div>
+        </div>
+      </div>
+      <div class="post-acts"><button type="button" class="like" data-n="3402" aria-pressed="false"><svg class="ico"><use href="#i-heart"/></svg><span>3.402</span></button><button type="button"><svg class="ico"><use href="#i-cmt"/></svg>214</button><button type="button"><svg class="ico"><use href="#i-send"/></svg></button><button type="button" class="save" aria-label="Salvar"><svg class="ico"><use href="#i-save"/></svg></button></div>
+      <p class="post-cap"><b>curtib.a</b>Gostou? Manda essa prévia no orçamento ali embaixo. <span class="tags">#personalizado</span><small>Há 3 horas</small></p>
+    </article>
+
+    <article class="post" id="ficha">
+      <div class="post-head"><span class="avatar"><svg viewBox="0 0 48 48" class="mark" style="stroke-width:4"><use href="#tree"/></svg></span><span class="meta"><b>curtib.a <svg class="badge" viewBox="0 0 16 16"><use href="#i-badge"/></svg></b><small>Ficha técnica</small></span><span class="more">•••</span></div>
+      <div class="post-body">
+        <h2>Feito pra durar na parede e no feed</h2>
+        <dl class="specs">
+          <div><dt>Tamanho</dt><dd>60 × 120 cm</dd></div>
+          <div><dt>Formato</dt><dd>Tela de celular</dd></div>
+          <div><dt>Iluminação</dt><dd>LED embutido, luz quente</dd></div>
+          <div><dt>Moldura</dt><dd>Impressa com seu nome e logo</dd></div>
+          <div><dt>Fixação</dt><dd>Alumínio + kit de parede</dd></div>
+          <div><dt>Origem</dt><dd>Curitiba, PR</dd></div>
+        </dl>
+      </div>
+      <div class="post-acts"><button type="button" class="like" data-n="947" aria-pressed="false"><svg class="ico"><use href="#i-heart"/></svg><span>947</span></button><button type="button"><svg class="ico"><use href="#i-cmt"/></svg>52</button><button type="button"><svg class="ico"><use href="#i-send"/></svg></button><button type="button" class="save" aria-label="Salvar"><svg class="ico"><use href="#i-save"/></svg></button></div>
+      <p class="post-cap"><b>curtib.a</b>Salva esse post pra mostrar pro sócio 😉<small>Há 5 horas</small></p>
+    </article>
+
+    <article class="post" id="orcamento">
+      <div class="post-head"><span class="avatar"><svg viewBox="0 0 48 48" class="mark" style="stroke-width:4"><use href="#tree"/></svg></span><span class="meta"><b>curtib.a <svg class="badge" viewBox="0 0 16 16"><use href="#i-badge"/></svg></b><small>Direct · responde rápido</small></span></div>
+      <div class="dm">
+        <p class="bubble them">Oi! Bora colocar seu espaço no feed? Me conta um pouco do seu negócio que a mensagem já sai pronta pro nosso WhatsApp.</p>
+        <form id="quote" novalidate>
+          <div class="row2">
+            <div><label for="q-nome">Seu nome</label><input type="text" id="q-nome" autocomplete="name"></div>
+            <div><label for="q-neg">Negócio</label><input type="text" id="q-neg" placeholder="Ex.: Café do Largo"></div>
+          </div>
+          <div class="row2">
+            <div><label for="q-tipo">Tipo de espaço</label><select id="q-tipo"><option>Café</option><option>Restaurante</option><option>Barbearia</option><option>Clínica</option><option>Loja</option><option>Studio</option><option>Evento</option><option>Outro</option></select></div>
+            <div><label for="q-bairro">Bairro / cidade</label><input type="text" id="q-bairro" placeholder="Ex.: Batel, Curitiba"></div>
+          </div>
+          <div><label for="q-obs">Mensagem</label><textarea id="q-obs" rows="2" placeholder="Alguma ideia para a moldura?"></textarea></div>
+          <p class="err" id="q-err" hidden>Preencha seu nome e o nome do negócio.</p>
+          <button class="pill dark send" type="submit"><svg class="ico" style="width:18px;height:18px"><use href="#i-send"/></svg>Montar mensagem</button>
+        </form>
+        <div class="result" id="q-res" hidden>
+          <p class="bubble me" id="q-msg"></p>
+          <p class="bubble them">Perfeito! Toque abaixo para enviar no WhatsApp. Se não abrir, chama no <span class="phone-num">(41) 98757-4242</span>.</p>
+          <a class="pill" id="q-link" href="#" target="_blank" rel="noopener">Abrir no WhatsApp ↗</a>
+        </div>
+      </div>
+    </article>
+
+    <article class="post" id="duvidas">
+      <div class="post-head"><span class="avatar"><svg viewBox="0 0 48 48" class="mark" style="stroke-width:4"><use href="#tree"/></svg></span><span class="meta"><b>curtib.a <svg class="badge" viewBox="0 0 16 16"><use href="#i-badge"/></svg></b><small>Perguntas frequentes</small></span><span class="more">•••</span></div>
+      <div class="post-body"><h2>Dúvidas nos comentários</h2></div>
+      <div class="comments">
+        <div class="cmt"><span class="avatar" style="--av:#7A3E22">M</span><div><p><b>marina.studio</b>Dá pra usar as cores e a fonte da minha marca?</p><p class="reply"><b>curtib.a</b>Dá sim! A moldura é impressa sob medida, com seu nome, logo, cores e a legenda que você quiser.</p><small>Há 1 dia</small></div></div>
+        <div class="cmt"><span class="avatar" style="--av:#2E5BBA">R</span><div><p><b>rafa.barber</b>Quanto tempo leva pra ficar pronto?</p><p class="reply"><b>curtib.a</b>A produção começa assim que você aprova a arte. O prazo certinho vai junto com o orçamento.</p><small>Há 2 dias</small></div></div>
+        <div class="cmt"><span class="avatar" style="--av:#FF4B3A;color:#111712">J</span><div><p><b>ju.doces</b>Vocês entregam fora de Curitiba?</p><p class="reply"><b>curtib.a</b>Entregamos. Em Curitiba e região a gente instala; pras outras cidades vai embalado com kit de parede e passo a passo.</p><small>Há 3 dias</small></div></div>
+        <div class="cmt"><span class="avatar" style="--av:#1E4D33">P</span><div><p><b>pedro.eventos</b>Precisa de tomada perto? E serve pra evento?</p><p class="reply"><b>curtib.a</b>O LED vai na tomada comum. Pra evento ele fica num pedestal, ótimo pra casamento e ativação de marca.</p><small>Há 4 dias</small></div></div>
+      </div>
+      <div class="post-acts"><button type="button" class="like" data-n="512" aria-pressed="false"><svg class="ico"><use href="#i-heart"/></svg><span>512</span></button><button type="button"><svg class="ico"><use href="#i-cmt"/></svg>4</button><button type="button"><svg class="ico"><use href="#i-send"/></svg></button><button type="button" class="save" aria-label="Salvar"><svg class="ico"><use href="#i-save"/></svg></button></div>
+      <p class="post-cap"><small style="margin:0">Ficou com outra dúvida? Manda no direct ali em cima.</small></p>
+    </article>
+
+  </div>
+</main>
+
+<footer class="gutter">curtib.a · Sua parede virou post · Feito em Curitiba pra rodar no feed</footer>
+
+<nav class="bottombar" aria-label="Navegação">
+  <a href="#inicio" aria-label="Início"><svg class="ico"><use href="#i-home"/></svg></a>
+  <a href="#como-funciona" aria-label="Como funciona"><svg class="ico"><use href="#i-play"/></svg></a>
+  <a href="#personalize" aria-label="Personalize"><svg class="ico"><use href="#i-brush"/></svg></a>
+  <a href="#duvidas" aria-label="Dúvidas"><svg class="ico"><use href="#i-search"/></svg></a>
+  <a href="#orcamento" aria-label="Orçamento"><span class="me"><svg class="ico"><use href="#i-send"/></svg></span></a>
+</nav>
+
+<script>
+(function () {
+  var WHATS = "5541987574242"; // troque pelo número real (55 + DDD + número)
+  var fmt = function (n) { return n.toLocaleString("pt-BR"); };
+
+  // curtir
+  document.querySelectorAll(".post-acts .like").forEach(function (b) {
+    b.addEventListener("click", function () {
+      var on = b.classList.toggle("liked");
+      b.setAttribute("aria-pressed", on);
+      var n = +b.dataset.n + (on ? 1 : 0);
+      b.querySelector("span").textContent = fmt(n);
+    });
+  });
+
+  // pontos do carrossel
+  var slides = document.getElementById("slides"), dots = document.querySelectorAll("#slide-dots i");
+  slides.addEventListener("scroll", function () {
+    var w = slides.firstElementChild.getBoundingClientRect().width + 10;
+    var i = Math.min(dots.length - 1, Math.round(slides.scrollLeft / w));
+    dots.forEach(function (d, k) { d.classList.toggle("on", k === i); });
+  }, { passive: true });
+
+  // personalizador
+  var nome = document.getElementById("f-nome"), leg = document.getElementById("f-leg");
+  var logoUrl = null, hasLogo = false;
+  var counts = [["f-likes", "pv-likes"], ["f-cmts", "pv-cmts"], ["f-reps", "pv-reps"]];
+  function setAvatar(el) {
+    el.textContent = "";
+    if (logoUrl) { var img = new Image(); img.src = logoUrl; img.alt = ""; el.appendChild(img); }
+    else el.innerHTML = '<svg viewBox="0 0 48 72" class="mark"><use href="#m"/></svg>';
+    el.classList.toggle("logo-av", !logoUrl);
+  }
+  function upd() {
+    var n = nome.value.trim() || "Seu negócio";
+    document.getElementById("pv-nome").textContent = n;
+    document.getElementById("pv-nome2").textContent = n;
+    document.getElementById("pv-leg").textContent = leg.value.trim() || "Sua legenda aqui";
+    setAvatar(document.getElementById("pv-av"));
+    setAvatar(document.getElementById("up-thumb"));
+    var me = document.getElementById("pv-me");
+    me.style.backgroundImage = logoUrl ? "url(" + logoUrl + ")" : "";
+    me.classList.toggle("logo-me", !logoUrl);
+    me.innerHTML = logoUrl ? "" : '<svg viewBox="0 0 48 72" class="mark"><use href="#m"/></svg>';
+    var g = function (id) { return document.getElementById(id).value.trim(); };
+    var ideia = g("f-ideia");
+    var msg = "Oi, Curtib.a! Montei meu espelho no site:\n" +
+      "• Nome no perfil: " + n + "\n• Legenda: " + (g("f-leg") || "-") + "\n" +
+      "• Curtidas: " + (g("f-likes") || "0") + " · Comentários: " + (g("f-cmts") || "0") + " · Reposts: " + (g("f-reps") || "0") +
+      (hasLogo ? "\nVou mandar minha logo aqui na conversa." : "") +
+      (ideia ? "\nMinha ideia: " + ideia : "") + "\nPode me passar um orçamento?";
+    document.getElementById("wa-idea").href = "https://wa.me/" + WHATS + "?text=" + encodeURIComponent(msg);
+    counts.forEach(function (c) { document.getElementById(c[1]).textContent = document.getElementById(c[0]).value.trim() || "0"; });
+  }
+  [nome, leg, document.getElementById("f-ideia")].forEach(function (el) { el.addEventListener("input", upd); });
+  counts.forEach(function (c) {
+    document.getElementById(c[0]).addEventListener("input", function (e) {
+      e.target.value = e.target.value.replace(/[^0-9.,kKmM ]/g, "");
+      upd();
+    });
+  });
+  var fileIn = document.getElementById("f-logo"), clearBtn = document.getElementById("f-logo-clear");
+  fileIn.addEventListener("change", function () {
+    var f = fileIn.files && fileIn.files[0];
+    if (!f || !/^image\//.test(f.type)) return;
+    var r = new FileReader();
+    r.onload = function () { logoUrl = r.result; hasLogo = true; clearBtn.hidden = false; upd(); };
+    r.readAsDataURL(f);
+  });
+  clearBtn.addEventListener("click", function () { logoUrl = null; hasLogo = false; fileIn.value = ""; clearBtn.hidden = true; upd(); });
+  upd();
+
+  // orçamento
+  document.getElementById("quote").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var qn = document.getElementById("q-nome").value.trim(), qneg = document.getElementById("q-neg").value.trim();
+    var err = document.getElementById("q-err");
+    if (!qn || !qneg) { err.hidden = false; document.getElementById(qn ? "q-neg" : "q-nome").focus(); return; }
+    err.hidden = true;
+    var bairro = document.getElementById("q-bairro").value.trim(), obs = document.getElementById("q-obs").value.trim();
+    var msg = "Oi, Curtib.a! Sou " + qn + ", do " + qneg + " (" + document.getElementById("q-tipo").value + (bairro ? ", " + bairro : "") + ").\n" +
+      "Quero um orçamento do espelho 60 × 120 com o nome \"" + (nome.value.trim() || qneg) + "\", legenda \"" + leg.value.trim() + "\" e " +
+      document.getElementById("f-likes").value.trim() + " curtidas, " + document.getElementById("f-cmts").value.trim() + " comentários e " + document.getElementById("f-reps").value.trim() + " reposts." +
+      (hasLogo ? "\nJá tenho a logo e envio aqui na conversa." : "") +
+      (obs ? "\n" + obs : "");
+    document.getElementById("q-msg").textContent = msg;
+    document.getElementById("q-link").href = "https://wa.me/" + WHATS + "?text=" + encodeURIComponent(msg);
+    document.getElementById("q-res").hidden = false;
+  });
+})();
+</script>
+
+</body>
+</html>
