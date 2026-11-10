@@ -218,50 +218,47 @@ button:disabled { opacity: .6; cursor: wait; }
     var n = parseInt($("parcelas").value, 10) || 1, parc = num($("parcela").value), av = num($("avista").value);
     ctx.fillStyle = "#F1F2EE"; ctx.fillRect(0, 0, W, H); ctx.textBaseline = "alphabetic";
     // cabeçalho
-    ctx.fillStyle = "#1E4D33"; ctx.fillRect(0, 0, W, 170);
-    ctx.font = "800 68px " + D; ctx.fillStyle = "#fff"; ctx.fillText("curtib", 64, 110);
-    var w1 = ctx.measureText("curtib").width; ctx.fillStyle = "#FF5B4A"; ctx.fillText(".", 64 + w1, 110);
-    ctx.fillStyle = "#fff"; ctx.fillText("a", 64 + w1 + ctx.measureText(".").width, 110);
-    ctx.font = "500 30px " + S; ctx.textAlign = "right"; ctx.fillStyle = "#DCE8DF";
-    ctx.fillText("Proposta comercial", W - 64, 82); ctx.fillText(fmt(hoje), W - 64, 122); ctx.textAlign = "left";
+    ctx.fillStyle = "#1E4D33"; ctx.fillRect(0, 0, W, 116);
+    ctx.font = "800 52px " + D; ctx.fillStyle = "#fff"; ctx.fillText("curtib", 56, 76);
+    var w1 = ctx.measureText("curtib").width; ctx.fillStyle = "#FF5B4A"; ctx.fillText(".", 56 + w1, 76);
+    ctx.fillStyle = "#fff"; ctx.fillText("a", 56 + w1 + ctx.measureText(".").width, 76);
+    ctx.font = "500 24px " + S; ctx.textAlign = "right"; ctx.fillStyle = "#DCE8DF";
+    ctx.fillText("Proposta comercial · " + fmt(hoje), W - 56, 70); ctx.textAlign = "left";
     // título
-    ctx.fillStyle = "#14231A"; ctx.font = "800 62px " + D;
-    var tl = wrap(ctx, "Espelho personalizado para " + loja, W - 128).slice(0, 3), y = 268;
-    tl.forEach(function (l) { ctx.fillText(l, 64, y); y += 68; });
-    if (cliente) { ctx.font = "400 32px " + S; ctx.fillStyle = "#55625A"; ctx.fillText("Preparado para " + cliente, 64, y + 4); y += 44; }
-    var top = y + 24;
-    // espelho
-    var ih = 760, iw = ih * current.width / current.height;
-    ctx.save(); rrect(ctx, 64, top, iw, ih, 28); ctx.clip(); ctx.drawImage(current, 64, top, iw, ih); ctx.restore();
-    // o que vem
-    var x = 64 + iw + 48, cw = W - 64 - x, yy = top + 30;
-    ctx.fillStyle = "#14231A"; ctx.font = "800 38px " + D;
-    wrap(ctx, "O que vem no seu espelho", cw).forEach(function (l) { ctx.fillText(l, x, yy); yy += 46; });
-    yy += 18; ctx.font = "400 31px " + S;
-    ["Espelho 60 × 120 cm em formato de celular", "LED embutido em luz quente", "Moldura com nome, logo e legenda", "Kit de fixação na parede", "Produção em Curitiba"].forEach(function (t) {
-      ctx.fillStyle = "#FF5B4A"; ctx.beginPath(); ctx.arc(x + 8, yy - 10, 7, 0, 7); ctx.fill(); ctx.fillStyle = "#14231A";
-      wrap(ctx, t, cw - 34).forEach(function (l) { ctx.fillText(l, x + 30, yy); yy += 40; }); yy += 18;
+    ctx.fillStyle = "#14231A"; ctx.font = "800 42px " + D;
+    var y = 182; wrap(ctx, "Espelho personalizado para " + loja, W - 112).slice(0, 2).forEach(function (l) { ctx.fillText(l, 56, y); y += 48; });
+    if (cliente) { ctx.font = "400 24px " + S; ctx.fillStyle = "#55625A"; ctx.fillText("Preparado para " + cliente, 56, y); y += 30; }
+    // espelho grande
+    var top = y + 16, ih = 1250, iw = ih * current.width / current.height;
+    if (iw > W - 112) { iw = W - 112; ih = iw * current.height / current.width; }
+    var ix = (W - iw) / 2;
+    ctx.save(); rrect(ctx, ix, top, iw, ih, 28); ctx.clip(); ctx.drawImage(current, ix, top, iw, ih); ctx.restore();
+    // informações em duas colunas
+    var by = top + ih + 40, colW = (W - 112 - 32) / 2;
+    ctx.fillStyle = "#14231A"; ctx.font = "700 24px " + S; ctx.fillText("O que vem", 56, by + 4);
+    var ly = by + 42; ctx.font = "400 22px " + S;
+    ["Espelho 60 × 120 cm com LED", "Moldura com nome, logo e legenda", "Kit de fixação na parede", "Produção em Curitiba"].forEach(function (t) {
+      ctx.fillStyle = "#FF5B4A"; ctx.beginPath(); ctx.arc(62, ly - 7, 5, 0, 7); ctx.fill(); ctx.fillStyle = "#14231A";
+      ctx.fillText(t, 78, ly); ly += 34;
     });
-    // preço
-    var py = top + ih + 48;
-    rrect(ctx, 64, py, W - 128, 300, 32); ctx.fillStyle = "#DCE8DF"; ctx.fill();
-    ctx.fillStyle = "#1E4D33"; ctx.font = "700 26px " + S; ctx.fillText("PREÇO ESPECIAL DE LANÇAMENTO", 108, py + 64);
-    ctx.fillStyle = "#14231A"; ctx.font = "800 92px " + D; var pv = "R$ " + brl(av); ctx.fillText(pv, 104, py + 162);
-    var pw = ctx.measureText(pv).width; ctx.font = "500 36px " + S; ctx.fillText("à vista", 120 + pw, py + 162);
-    ctx.font = "600 44px " + S; ctx.fillText("ou " + n + "x de R$ " + brl(parc), 108, py + 226);
-    ctx.font = "400 28px " + S; ctx.fillStyle = "#55625A"; ctx.fillText("Total parcelado: R$ " + brl(n * parc), 108, py + 270);
-    // prazo, validade, observações
-    var by = py + 300 + 64; ctx.fillStyle = "#14231A";
-    [["Prazo de entrega: ", $("prazo").value.trim() || "A combinar"], ["Proposta válida até: ", fmt(val)]].forEach(function (pr) {
-      ctx.font = "700 32px " + S; ctx.fillText(pr[0], 64, by); var lw = ctx.measureText(pr[0]).width;
-      ctx.font = "400 32px " + S; ctx.fillText(pr[1], 64 + lw, by); by += 48;
+    ly += 6;
+    [["Prazo: ", $("prazo").value.trim() || "A combinar"], ["Válida até: ", fmt(val)]].forEach(function (pr) {
+      ctx.font = "700 22px " + S; ctx.fillText(pr[0], 56, ly); var lw = ctx.measureText(pr[0]).width;
+      ctx.font = "400 22px " + S; ctx.fillText(pr[1], 56 + lw, ly); ly += 32;
     });
+    var px = 56 + colW + 32, ph = 210;
+    rrect(ctx, px, by - 18, colW, ph, 24); ctx.fillStyle = "#DCE8DF"; ctx.fill();
+    ctx.fillStyle = "#1E4D33"; ctx.font = "700 18px " + S; ctx.fillText("PREÇO DE LANÇAMENTO", px + 28, by + 22);
+    ctx.fillStyle = "#14231A"; ctx.font = "800 60px " + D; var pv = "R$ " + brl(av); ctx.fillText(pv, px + 26, by + 92);
+    var pw = ctx.measureText(pv).width; ctx.font = "500 22px " + S; ctx.fillText("à vista", px + 36 + pw, by + 92);
+    ctx.font = "600 28px " + S; ctx.fillText("ou " + n + "x de R$ " + brl(parc), px + 28, by + 136);
+    ctx.font = "400 20px " + S; ctx.fillStyle = "#55625A"; ctx.fillText("Total parcelado: R$ " + brl(n * parc), px + 28, by + 170);
     var obs = $("obs").value.trim();
-    if (obs) { ctx.font = "400 28px " + S; ctx.fillStyle = "#55625A"; wrap(ctx, obs, W - 128).slice(0, 2).forEach(function (l) { by += 4; ctx.fillText(l, 64, by); by += 38; }); }
+    if (obs) { ctx.font = "400 20px " + S; ctx.fillStyle = "#55625A"; var oy = Math.max(ly, by + ph) + 12; wrap(ctx, obs, W - 112).slice(0, 1).forEach(function (l) { ctx.fillText(l, 56, oy); }); }
     // rodapé
-    ctx.fillStyle = "#1E4D33"; ctx.fillRect(0, H - 120, W, 120);
-    ctx.fillStyle = "#fff"; ctx.font = "700 32px " + S; ctx.fillText("WhatsApp (41) 98757-4242", 64, H - 50);
-    ctx.textAlign = "right"; ctx.font = "500 30px " + S; ctx.fillStyle = "#DCE8DF"; ctx.fillText("curtiba.com.br", W - 64, H - 50); ctx.textAlign = "left";
+    ctx.fillStyle = "#1E4D33"; ctx.fillRect(0, H - 84, W, 84);
+    ctx.fillStyle = "#fff"; ctx.font = "700 26px " + S; ctx.fillText("WhatsApp (41) 98757-4242", 56, H - 32);
+    ctx.textAlign = "right"; ctx.font = "500 24px " + S; ctx.fillStyle = "#DCE8DF"; ctx.fillText("curtiba.com.br", W - 56, H - 32); ctx.textAlign = "left";
     return cv;
   }
   function cardFile() {
