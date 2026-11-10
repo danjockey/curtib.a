@@ -207,6 +207,10 @@ input[type=text]:focus, select:focus, textarea:focus { outline: none; border-col
 .nums label { margin: 0; display: inline-flex; }
 .nums input { font-variant-numeric: tabular-nums; }
 .wa-end { grid-column: 1 / -1; display: grid; gap: 8px; }
+.img-out { display: grid; gap: 10px; background: var(--araucaria-soft); border-radius: 14px; padding: 14px; }
+.img-out img { width: 140px; border-radius: 12px; justify-self: center; box-shadow: 0 6px 20px -8px rgba(0,0,0,.35); }
+.img-out p { margin: 0; font-size: 13px; color: var(--ink); text-align: center; }
+#img-btn:disabled { opacity: .6; cursor: wait; }
 .wa-btn { justify-content: center; padding: 14px 18px; font-size: 15px; }
 .up-thumb.logo-av { color: #FFFFFF; background: #1E4D33; }
 .up-thumb.logo-av svg { height: 62%; width: auto; stroke-width: 5.5; }
@@ -428,6 +432,12 @@ footer { text-align: center; color: var(--muted); font-size: 13px; padding-block
           </div>
           <div class="wa-end">
             <a class="pill wa-btn" id="wa-idea" href="#" target="_blank" rel="noopener"><svg class="ico" style="width:18px;height:18px"><use href="#i-send"/></svg>Mandar minha ideia no WhatsApp</a>
+            <button type="button" class="pill ghost wa-btn" id="img-btn"><svg class="ico" style="width:18px;height:18px"><use href="#i-save"/></svg>Enviar também a imagem da prévia</button>
+            <div class="img-out" id="img-out" hidden>
+              <img id="img-prev" alt="Imagem da prévia do seu espelho">
+              <p>Pronto! A imagem foi salva no seu aparelho. Se não salvou, segure o dedo na imagem e toque em "Salvar imagem".</p>
+              <a class="pill wa-btn" id="wa-img" href="#" target="_blank" rel="noopener"><svg class="ico" style="width:18px;height:18px"><use href="#i-send"/></svg>Abrir WhatsApp e anexar a imagem</a>
+            </div>
             <p style="font-size:12px;color:var(--muted)">A mensagem já vai pronta com o que você montou. Se não abrir, chama no <span class="phone-num">(41) 98757-4242</span>. A moldura é sempre branca.</p>
           </div>
         </div>
@@ -504,6 +514,7 @@ footer { text-align: center; color: var(--muted); font-size: 13px; padding-block
   <a href="#orcamento" aria-label="Orçamento"><span class="me"><svg class="ico"><use href="#i-send"/></svg></span></a>
 </nav>
 
+<script src="mirror.js"></script>
 <script>
 (function () {
   var WHATS = "5541987574242"; // troque pelo número real (55 + DDD + número)
@@ -529,7 +540,7 @@ footer { text-align: center; color: var(--muted); font-size: 13px; padding-block
 
   // personalizador
   var nome = document.getElementById("f-nome"), leg = document.getElementById("f-leg");
-  var logoUrl = null, hasLogo = false;
+  var logoUrl = null, hasLogo = false, lastMsg = "";
   var counts = [["f-likes", "pv-likes"], ["f-cmts", "pv-cmts"], ["f-reps", "pv-reps"]];
   function setAvatar(el) {
     el.textContent = "";
@@ -556,6 +567,7 @@ footer { text-align: center; color: var(--muted); font-size: 13px; padding-block
       (hasLogo ? "\nVou mandar minha logo aqui na conversa." : "") +
       (ideia ? "\nMinha ideia: " + ideia : "") + "\nPode me passar um orçamento?";
     document.getElementById("wa-idea").href = "https://wa.me/" + WHATS + "?text=" + encodeURIComponent(msg);
+    lastMsg = msg;
     counts.forEach(function (c) { document.getElementById(c[1]).textContent = document.getElementById(c[0]).value.trim() || "0"; });
   }
   [nome, leg, document.getElementById("f-ideia")].forEach(function (el) { el.addEventListener("input", upd); });
@@ -575,6 +587,26 @@ footer { text-align: center; color: var(--muted); font-size: 13px; padding-block
   });
   clearBtn.addEventListener("click", function () { logoUrl = null; hasLogo = false; fileIn.value = ""; clearBtn.hidden = true; upd(); });
   upd();
+
+  // imagem da prévia para mandar no WhatsApp
+  var imgBtn = document.getElementById("img-btn");
+  imgBtn.addEventListener("click", function () {
+    if (!window.CurtibaMirror) return;
+    imgBtn.disabled = true;
+    var g = function (id) { return document.getElementById(id).value.trim(); };
+    window.CurtibaMirror.draw({
+      nome: g("f-nome") || "Seu negócio", legenda: g("f-leg"), curtidas: g("f-likes") || "0",
+      comentarios: g("f-cmts") || "0", reposts: g("f-reps") || "0", logo: logoUrl,
+      foto: document.querySelector("#pv .photo").src
+    }).then(function (cv) {
+      var url = cv.toDataURL("image/jpeg", 0.9);
+      document.getElementById("img-prev").src = url;
+      try { var a = document.createElement("a"); a.href = url; a.download = "minha-previa-curtiba.jpg"; document.body.appendChild(a); a.click(); a.remove(); } catch (e) {}
+      var msg = lastMsg.replace("\nVou mandar minha logo aqui na conversa.", "") + "\n\n📎 Vou mandar a imagem da prévia aqui na conversa.";
+      document.getElementById("wa-img").href = "https://wa.me/" + WHATS + "?text=" + encodeURIComponent(msg);
+      document.getElementById("img-out").hidden = false;
+    }).finally(function () { imgBtn.disabled = false; });
+  });
 
   // orçamento
   document.getElementById("quote").addEventListener("submit", function (e) {
