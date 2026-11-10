@@ -44,6 +44,7 @@ button { font: 700 15px/20px var(--sans); border: 0; border-radius: 999px; paddi
 .b-green { background: var(--green); color: #fff; }
 .b-ghost { background: transparent; color: var(--ink); box-shadow: inset 0 0 0 1.5px var(--line); }
 button:disabled { opacity: .6; cursor: wait; }
+.grp { font: 700 11px/14px var(--sans); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-top: 6px; }
 .hint { font-size: 12px; color: var(--muted); margin: 0; }
 .total { font-size: 13px; color: var(--muted); }
 :focus-visible { outline: 3px solid var(--coral); outline-offset: 2px; }
@@ -91,9 +92,14 @@ button:disabled { opacity: .6; cursor: wait; }
   <aside class="preview">
     <canvas id="cv" width="1600" height="2600" aria-label="Prévia do espelho"></canvas>
     <div class="btns">
+      <span class="grp">PDF</span>
       <button type="button" class="b-coral" id="pdf">Baixar PDF da proposta</button>
       <button type="button" class="b-green" id="share">Enviar PDF (celular)</button>
-      <button type="button" class="b-ghost" id="img">Baixar só a imagem</button>
+      <span class="grp">Imagem com as informações</span>
+      <button type="button" class="b-coral" id="card-share">Enviar imagem da proposta (celular)</button>
+      <button type="button" class="b-ghost" id="card-dl">Baixar imagem da proposta</button>
+      <span class="grp">Só o espelho</span>
+      <button type="button" class="b-ghost" id="img">Baixar só a prévia do espelho</button>
     </div>
     <p class="hint" id="msg">Os dados ficam só neste aparelho. Nada é salvo no site.</p>
   </aside>
@@ -195,7 +201,87 @@ button:disabled { opacity: .6; cursor: wait; }
     doc.text("WhatsApp (41) 98757-4242 · curtiba.com.br · Curitiba, PR", 18, 285);
     return { doc: doc, name: "proposta-curtiba-" + slug(loja) + ".pdf" };
   }
-  function busy(b, on) { ["pdf", "share", "img"].forEach(function (id) { $(id).disabled = on; }); }
+  function busy(b, on) { ["pdf", "share", "img", "card-dl", "card-share"].forEach(function (id) { $(id).disabled = on; }); }
+  /* imagem da proposta (1080 × 1920), com as mesmas informações do PDF */
+  function wrap(ctx, text, maxW) {
+    var words = String(text).split(/\s+/), lines = [], line = "";
+    words.forEach(function (w) { var t = line ? line + " " + w : w; if (ctx.measureText(t).width > maxW && line) { lines.push(line); line = w; } else line = t; });
+    if (line) lines.push(line); return lines;
+  }
+  function rrect(ctx, x, y, w, h, r) { ctx.beginPath(); ctx.roundRect ? ctx.roundRect(x, y, w, h, r) : ctx.rect(x, y, w, h); }
+  function makeCard() {
+    var W = 1080, H = 1920, cv = document.createElement("canvas"); cv.width = W; cv.height = H;
+    var ctx = cv.getContext("2d"), D = '"Bricolage Grotesque", "DM Sans", sans-serif', S = '"DM Sans", system-ui, sans-serif';
+    var loja = $("loja").value.trim() || "sua empresa", cliente = $("cliente").value.trim();
+    var hoje = new Date(), val = new Date(hoje.getTime() + (parseInt($("validade").value, 10) || 15) * 864e5);
+    var fmt = function (d) { return d.toLocaleDateString("pt-BR"); };
+    var n = parseInt($("parcelas").value, 10) || 1, parc = num($("parcela").value), av = num($("avista").value);
+    ctx.fillStyle = "#F1F2EE"; ctx.fillRect(0, 0, W, H); ctx.textBaseline = "alphabetic";
+    // cabeçalho
+    ctx.fillStyle = "#1E4D33"; ctx.fillRect(0, 0, W, 170);
+    ctx.font = "800 68px " + D; ctx.fillStyle = "#fff"; ctx.fillText("curtib", 64, 110);
+    var w1 = ctx.measureText("curtib").width; ctx.fillStyle = "#FF5B4A"; ctx.fillText(".", 64 + w1, 110);
+    ctx.fillStyle = "#fff"; ctx.fillText("a", 64 + w1 + ctx.measureText(".").width, 110);
+    ctx.font = "500 30px " + S; ctx.textAlign = "right"; ctx.fillStyle = "#DCE8DF";
+    ctx.fillText("Proposta comercial", W - 64, 82); ctx.fillText(fmt(hoje), W - 64, 122); ctx.textAlign = "left";
+    // título
+    ctx.fillStyle = "#14231A"; ctx.font = "800 62px " + D;
+    var tl = wrap(ctx, "Espelho personalizado para " + loja, W - 128).slice(0, 3), y = 268;
+    tl.forEach(function (l) { ctx.fillText(l, 64, y); y += 68; });
+    if (cliente) { ctx.font = "400 32px " + S; ctx.fillStyle = "#55625A"; ctx.fillText("Preparado para " + cliente, 64, y + 4); y += 44; }
+    var top = y + 24;
+    // espelho
+    var ih = 760, iw = ih * current.width / current.height;
+    ctx.save(); rrect(ctx, 64, top, iw, ih, 28); ctx.clip(); ctx.drawImage(current, 64, top, iw, ih); ctx.restore();
+    // o que vem
+    var x = 64 + iw + 48, cw = W - 64 - x, yy = top + 30;
+    ctx.fillStyle = "#14231A"; ctx.font = "800 38px " + D;
+    wrap(ctx, "O que vem no seu espelho", cw).forEach(function (l) { ctx.fillText(l, x, yy); yy += 46; });
+    yy += 18; ctx.font = "400 31px " + S;
+    ["Espelho 60 × 120 cm em formato de celular", "LED embutido em luz quente", "Moldura com nome, logo e legenda", "Kit de fixação na parede", "Produção em Curitiba"].forEach(function (t) {
+      ctx.fillStyle = "#FF5B4A"; ctx.beginPath(); ctx.arc(x + 8, yy - 10, 7, 0, 7); ctx.fill(); ctx.fillStyle = "#14231A";
+      wrap(ctx, t, cw - 34).forEach(function (l) { ctx.fillText(l, x + 30, yy); yy += 40; }); yy += 18;
+    });
+    // preço
+    var py = top + ih + 48;
+    rrect(ctx, 64, py, W - 128, 300, 32); ctx.fillStyle = "#DCE8DF"; ctx.fill();
+    ctx.fillStyle = "#1E4D33"; ctx.font = "700 26px " + S; ctx.fillText("PREÇO ESPECIAL DE LANÇAMENTO", 108, py + 64);
+    ctx.fillStyle = "#14231A"; ctx.font = "800 92px " + D; var pv = "R$ " + brl(av); ctx.fillText(pv, 104, py + 162);
+    var pw = ctx.measureText(pv).width; ctx.font = "500 36px " + S; ctx.fillText("à vista", 120 + pw, py + 162);
+    ctx.font = "600 44px " + S; ctx.fillText("ou " + n + "x de R$ " + brl(parc), 108, py + 226);
+    ctx.font = "400 28px " + S; ctx.fillStyle = "#55625A"; ctx.fillText("Total parcelado: R$ " + brl(n * parc), 108, py + 270);
+    // prazo, validade, observações
+    var by = py + 300 + 64; ctx.fillStyle = "#14231A";
+    [["Prazo de entrega: ", $("prazo").value.trim() || "A combinar"], ["Proposta válida até: ", fmt(val)]].forEach(function (pr) {
+      ctx.font = "700 32px " + S; ctx.fillText(pr[0], 64, by); var lw = ctx.measureText(pr[0]).width;
+      ctx.font = "400 32px " + S; ctx.fillText(pr[1], 64 + lw, by); by += 48;
+    });
+    var obs = $("obs").value.trim();
+    if (obs) { ctx.font = "400 28px " + S; ctx.fillStyle = "#55625A"; wrap(ctx, obs, W - 128).slice(0, 2).forEach(function (l) { by += 4; ctx.fillText(l, 64, by); by += 38; }); }
+    // rodapé
+    ctx.fillStyle = "#1E4D33"; ctx.fillRect(0, H - 120, W, 120);
+    ctx.fillStyle = "#fff"; ctx.font = "700 32px " + S; ctx.fillText("WhatsApp (41) 98757-4242", 64, H - 50);
+    ctx.textAlign = "right"; ctx.font = "500 30px " + S; ctx.fillStyle = "#DCE8DF"; ctx.fillText("curtiba.com.br", W - 64, H - 50); ctx.textAlign = "left";
+    return cv;
+  }
+  function cardFile() {
+    return render().then(function () {
+      var cv = makeCard();
+      return new Promise(function (ok) { cv.toBlob(function (b) { ok({ blob: b, url: cv.toDataURL("image/jpeg", 0.92), name: "proposta-curtiba-" + slug($("loja").value) + ".jpg" }); }, "image/jpeg", 0.92); });
+    });
+  }
+  function download(url, name) { var a = document.createElement("a"); a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove(); }
+  $("card-dl").addEventListener("click", function () {
+    busy(null, true); cardFile().then(function (f) { download(f.url, f.name); $("msg").textContent = "Imagem baixada: " + f.name; }).finally(function () { busy(null, false); });
+  });
+  $("card-share").addEventListener("click", function () {
+    busy(null, true);
+    cardFile().then(function (f) {
+      var file = new File([f.blob], f.name, { type: "image/jpeg" });
+      if (navigator.canShare && navigator.canShare({ files: [file] })) return navigator.share({ files: [file], title: "Proposta Curtib.a" }).catch(function () {});
+      download(f.url, f.name); $("msg").textContent = "Este navegador não envia arquivos direto. A imagem foi baixada: anexe no WhatsApp.";
+    }).finally(function () { busy(null, false); });
+  });
   $("pdf").addEventListener("click", function () {
     busy(null, true); render().then(function () { var p = makePdf(); p.doc.save(p.name); $("msg").textContent = "PDF baixado: " + p.name; }).finally(function () { busy(null, false); });
   });
