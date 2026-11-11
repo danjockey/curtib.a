@@ -110,6 +110,14 @@ button:disabled { opacity: .6; cursor: wait; }
 (function () {
   var $ = function (id) { return document.getElementById(id); };
   var logoUrl = null, fotoUrl = "foto-exemplo.jpg", current = null, timer = null;
+  try {
+    var qs = new URLSearchParams(location.search), qLoja = qs.get("loja");
+    if (qLoja) {
+      $("loja").value = qLoja; $("cliente").value = "";
+      $("perfil").value = qLoja.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "").slice(0, 24);
+      $("legenda").value = "Tira a foto e marca a gente! ✨";
+    }
+  } catch (e) {}
   var brl = function (n) { return n.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }); };
   var num = function (s) { return parseFloat(String(s).replace(/\./g, "").replace(",", ".")) || 0; };
   function readFile(input, cb) {

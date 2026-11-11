@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Prospecção Curtib.a</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700..800&family=DM+Sans:opsz,wght@9..40,400..700&display=swap">
+<style>
+/* Lista de contatos em cartões, com filtros no topo e mensagem editável */
+:root { --bg: #F1F2EE; --card: #FFFFFF; --line: #D9DDD6; --ink: #14231A; --muted: #55625A; --green: #1E4D33; --green-soft: #DCE8DF; --coral: #FF5B4A; --coral-ink: #C2321F; --wa: #1F8A4C;
+  --display: "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif; --sans: "DM Sans", ui-sans-serif, system-ui, sans-serif; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 400 15px/1.45 var(--sans); }
+header { background: var(--green); color: #fff; padding: 14px max(16px, env(safe-area-inset-left)); position: sticky; top: 0; z-index: 5; }
+header .in { max-width: 820px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.brand { font: 800 24px/1 var(--display); letter-spacing: -.04em; } .brand i { font-style: normal; color: var(--coral); }
+.stats { display: flex; gap: 14px; font-size: 13px; color: #DCE8DF; font-variant-numeric: tabular-nums; }
+.stats b { color: #fff; font-size: 15px; }
+main { max-width: 820px; margin: 0 auto; padding: 16px max(16px, env(safe-area-inset-left)) 60px; display: grid; gap: 14px; }
+.box { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 16px; display: grid; gap: 10px; }
+.box h2 { margin: 0; font: 800 18px/1.2 var(--display); letter-spacing: -.02em; }
+details.box summary { cursor: pointer; font: 800 18px/1.2 var(--display); list-style: none; display: flex; justify-content: space-between; }
+details.box summary::after { content: "+"; color: var(--coral-ink); font-size: 22px; } details[open].box summary::after { content: "–"; }
+label { font-weight: 700; font-size: 13px; display: block; margin-bottom: 4px; }
+input, select, textarea { width: 100%; font: 400 15px/1.4 var(--sans); padding: 10px 12px; border-radius: 10px; border: 1.5px solid var(--line); background: var(--bg); color: var(--ink); }
+input:focus, select:focus, textarea:focus { outline: none; border-color: var(--green); }
+.row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; } .row3 { display: grid; grid-template-columns: 2fr 1.4fr 1fr auto; gap: 10px; align-items: end; }
+@media (max-width: 560px) { .row, .row3 { grid-template-columns: 1fr; } }
+.hint { font-size: 12px; color: var(--muted); margin: 0; }
+.chips { display: flex; gap: 6px; flex-wrap: wrap; }
+.chip { border: 1.5px solid var(--line); background: var(--card); border-radius: 999px; padding: 6px 12px; font: 600 13px/1 var(--sans); cursor: pointer; color: var(--ink); }
+.chip[aria-pressed="true"] { background: var(--green); border-color: var(--green); color: #fff; }
+.list { display: grid; gap: 10px; }
+.lead { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 14px; display: grid; gap: 10px; }
+.lead.st-enviado { border-left: 0; box-shadow: inset 0 0 0 2px #F3D58C; }
+.lead.st-respondeu { box-shadow: inset 0 0 0 2px #8FC3A2; }
+.lead.st-fechou { box-shadow: inset 0 0 0 2px var(--green); }
+.lead.st-nao { opacity: .6; }
+.top { display: flex; justify-content: space-between; gap: 10px; align-items: start; }
+.name { font: 800 17px/1.2 var(--display); letter-spacing: -.01em; }
+.meta { font-size: 13px; color: var(--muted); }
+.tag { font: 700 11px/1 var(--sans); letter-spacing: .06em; text-transform: uppercase; padding: 5px 9px; border-radius: 999px; background: var(--green-soft); color: var(--green); white-space: nowrap; }
+.fixo { background: #FCE7D8; color: #8A3D12; }
+.actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.btn { display: inline-flex; align-items: center; gap: 6px; border: 0; border-radius: 999px; padding: 10px 14px; font: 700 14px/1 var(--sans); cursor: pointer; text-decoration: none; }
+.b-wa { background: var(--wa); color: #fff; } .b-call { background: var(--green-soft); color: var(--green); }
+.b-ghost { background: transparent; color: var(--ink); box-shadow: inset 0 0 0 1.5px var(--line); }
+.b-coral { background: var(--coral); color: var(--ink); }
+.status { width: auto; padding: 8px 10px; font-size: 13px; }
+.note { font-size: 14px; padding: 8px 10px; }
+.del { margin-left: auto; background: none; border: 0; color: var(--coral-ink); font: 600 12px var(--sans); cursor: pointer; }
+.empty { text-align: center; color: var(--muted); padding: 24px; }
+:focus-visible { outline: 3px solid var(--coral); outline-offset: 2px; }
+</style>
+</head>
+<body>
+<header><div class="in"><span class="brand">curtib<i>.</i>a</span>
+  <div class="stats"><span><b id="n-hoje">0</b> hoje</span><span><b id="n-env">0</b> enviados</span><span><b id="n-resp">0</b> responderam</span><span><b id="n-fech">0</b> fechados</span></div></div></header>
+<main>
+  <details class="box" id="msgbox">
+    <summary>Mensagem</summary>
+    <div><label for="tpl">Modelo</label>
+      <select id="tpl"><option value="exp">Explicativa</option><option value="curta">Curta e curiosa</option><option value="res">Focada no resultado</option></select></div>
+    <div><label for="msg">Texto (use {loja} onde entra o nome da empresa)</label><textarea id="msg" rows="9"></textarea></div>
+    <div><label for="eu">Seu nome</label><input id="eu" type="text" value="Daniel"></div>
+    <p class="hint">O texto fica salvo neste aparelho. Ao tocar em WhatsApp, a conversa abre com a mensagem pronta e você só toca em enviar.</p>
+  </details>
+
+  <section class="box">
+    <div class="chips" id="f-tipo" aria-label="Filtrar por tipo"></div>
+    <div class="chips" id="f-st" aria-label="Filtrar por situação"></div>
+    <input id="busca" type="text" placeholder="Buscar pelo nome…" aria-label="Buscar">
+  </section>
+
+  <div class="list" id="list"></div>
+
+  <details class="box">
+    <summary>Adicionar contato</summary>
+    <div class="row3">
+      <div><label for="a-nome">Nome da empresa</label><input id="a-nome" type="text"></div>
+      <div><label for="a-tel">WhatsApp</label><input id="a-tel" type="text" inputmode="tel" placeholder="(41) 99999-9999"></div>
+      <div><label for="a-tipo">Tipo</label><select id="a-tipo"></select></div>
+      <button class="btn b-coral" id="a-add" type="button">Adicionar</button>
+    </div>
+    <div><label for="a-bairro">Bairro / cidade (opcional)</label><input id="a-bairro" type="text" placeholder="Ex.: Centro, Colombo"></div>
+  </details>
+
+  <section class="box">
+    <h2>Backup</h2>
+    <p class="hint">Os contatos e as situações ficam salvos só neste celular. Baixe uma planilha de vez em quando para não perder nada.</p>
+    <div class="actions"><button class="btn b-ghost" id="csv" type="button">Baixar planilha (CSV)</button></div>
+  </section>
+</main>
+<script>
+(function () {
+  var TIPOS = ["Loja de roupa", "Barbearia", "Estética", "Café / Restaurante", "Outro"];
+  var BASE = [
+    ["Outlet Colombo Premium", "Loja de roupa", "Santa Terezinha", "41985053544"],
+    ["Lully Store – Moda Feminina", "Loja de roupa", "Campo Pequeno", "41999635619"],
+    ["Loja Mixxx Colombo", "Loja de roupa", "Guaraituba", "41991577818"],
+    ["Boutique Thaiza Moda Feminina", "Loja de roupa", "Guarani", "41984633244"],
+    ["Colombo Park Shopping", "Outro", "Jd. N. Sra. de Fátima", "4136755800"],
+    ["Barbearias Colombo – Rio Verde", "Barbearia", "Rio Verde", "41997721146"],
+    ["Barbearias Colombo – Centro", "Barbearia", "Centro", "41995911145"],
+    ["Barbearia Studios CN Barbers", "Barbearia", "Maracanã", "41998835492"],
+    ["Barbearia Velho Carvalho", "Barbearia", "Maracanã", "41998880622"],
+    ["Barbearia Company MB Barber", "Barbearia", "São Gabriel", "41998699548"],
+    ["Luxuosa Estética & Beleza", "Estética", "Alto Maracanã", "41998517019"],
+    ["Bella Estética Colombo", "Estética", "Campo Pequeno", "41985290764"],
+    ["Clínica Lótus Fiori", "Estética", "Atuba", "4131600038"],
+    ["Royal Face Clínica de Estética", "Estética", "Maracanã", "41997274889"],
+    ["Emporium da Beleza – Colombo", "Estética", "Santa Terezinha", "41991176337"],
+    ["Restaurante e Café Vó Irene", "Café / Restaurante", "Jd. Fátima", "4131395050"],
+    ["Augustu's Cafe", "Café / Restaurante", "Centro", "4136564578"],
+    ["Restaurante e Café Marlene", "Café / Restaurante", "Centro", "4136563101"],
+    ["É da Pam – Café Colonial", "Café / Restaurante", "Roseira", "4136663357"],
+    ["Di Lucca Café", "Café / Restaurante", "Guarani", "41991791599"]
+  ];
+  var TPL = {
+    exp: "Oi, tudo bem? 😊 Aqui é o {eu}, da Curtib.a, uma empresa daqui da região de Curitiba 🌲\n\nA gente faz espelhos instagramáveis: um espelho grande, de 60 × 120 cm, com LED e uma moldura que imita um post, com o nome e a logo do seu negócio.\n\nFunciona assim: o cliente se olha no espelho, tira a foto e já sai parecendo um post de vocês. Ele posta, marca o {loja} e os seguidores dele conhecem vocês. É divulgação feita pelos próprios clientes, todo dia.\n\nPosso te mandar uma prévia de como ficaria com a marca de vocês? Estamos começando e temos um preço especial para os primeiros clientes.",
+    curta: "Oi! Tudo bem? 😊\n\nSou o {eu}, da Curtib.a. A gente cria espelhos com LED e moldura de post, personalizados com o nome e a logo do negócio, pro cliente tirar foto, postar e marcar vocês.\n\nPosso te mandar uma prévia de como ficaria o do {loja}? Temos condição especial de lançamento 🌲",
+    res: "Oi, tudo bem? 😊\n\nVi o {loja} e achei que vocês combinam muito com uma ideia nossa.\n\nSou o {eu}, da Curtib.a. A gente faz um espelho com LED, do tamanho de uma pessoa, com moldura de post e a marca do negócio. Todo cliente que tira foto nele vira propaganda: ele posta, marca vocês e mais gente conhece o lugar, sem pagar anúncio.\n\nPosso te mandar uma prévia com a logo de vocês? Os primeiros clientes têm preço especial."
+  };
+  var ST = [["novo", "Novo"], ["enviado", "Mensagem enviada"], ["respondeu", "Respondeu"], ["fechou", "Fechou"], ["nao", "Não quis"]];
+  var KEY = "curtiba-prospeccao-v1";
+  var $ = function (id) { return document.getElementById(id); };
+  var st = load();
+  function load() {
+    var d = null; try { d = JSON.parse(localStorage.getItem(KEY)); } catch (e) {}
+    d = d || {};
+    d.leads = d.leads || BASE.map(function (b, i) { return { id: "b" + i, nome: b[0], tipo: b[1], bairro: b[2] + ", Colombo", tel: b[3], status: "novo", nota: "", quando: null }; });
+    d.tpl = d.tpl || "exp"; d.msg = d.msg || TPL[d.tpl]; d.eu = d.eu || "Daniel";
+    d.ftipo = d.ftipo || "Todos"; d.fst = d.fst || "todos";
+    return d;
+  }
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(st)); } catch (e) {} }
+  function digits(s) { return String(s).replace(/\D/g, ""); }
+  function isCell(t) { t = digits(t); return t.length === 11 && t.charAt(2) === "9"; }
+  function fmtTel(t) { t = digits(t); return t.length === 11 ? "(" + t.slice(0, 2) + ") " + t.slice(2, 7) + "-" + t.slice(7) : t.length === 10 ? "(" + t.slice(0, 2) + ") " + t.slice(2, 6) + "-" + t.slice(6) : t; }
+  function msgFor(l) { return st.msg.split("{loja}").join(l.nome).split("{eu}").join(st.eu || ""); }
+  function today() { return new Date().toISOString().slice(0, 10); }
+
+  // mensagem
+  $("tpl").value = st.tpl; $("msg").value = st.msg; $("eu").value = st.eu;
+  $("tpl").addEventListener("change", function () { st.tpl = this.value; st.msg = TPL[st.tpl]; $("msg").value = st.msg; save(); });
+  $("msg").addEventListener("input", function () { st.msg = this.value; save(); });
+  $("eu").addEventListener("input", function () { st.eu = this.value; save(); });
+
+  // filtros
+  function chips(el, items, cur, onPick) {
+    el.innerHTML = "";
+    items.forEach(function (it) {
+      var b = document.createElement("button"); b.type = "button"; b.className = "chip"; b.textContent = it[1];
+      b.setAttribute("aria-pressed", String(it[0] === cur)); b.addEventListener("click", function () { onPick(it[0]); });
+      el.appendChild(b);
+    });
+  }
+  function drawFilters() {
+    chips($("f-tipo"), [["Todos", "Todos"]].concat(TIPOS.map(function (t) { return [t, t]; })), st.ftipo, function (v) { st.ftipo = v; save(); drawFilters(); draw(); });
+    chips($("f-st"), [["todos", "Todas as situações"]].concat(ST), st.fst, function (v) { st.fst = v; save(); drawFilters(); draw(); });
+  }
+  $("busca").addEventListener("input", draw);
+
+  // lista
+  function draw() {
+    var q = $("busca").value.trim().toLowerCase(), list = $("list"); list.innerHTML = "";
+    var shown = st.leads.filter(function (l) {
+      return (st.ftipo === "Todos" || l.tipo === st.ftipo) && (st.fst === "todos" || l.status === st.fst) && (!q || l.nome.toLowerCase().indexOf(q) >= 0);
+    });
+    if (!shown.length) { var e = document.createElement("p"); e.className = "empty"; e.textContent = "Nenhum contato com esse filtro."; list.appendChild(e); }
+    shown.forEach(function (l) {
+      var card = document.createElement("article"); card.className = "lead st-" + l.status;
+      var cell = isCell(l.tel);
+      card.innerHTML =
+        '<div class="top"><div><div class="name"></div><div class="meta"></div></div><span class="tag"></span></div>' +
+        '<div class="actions"></div>' +
+        '<div class="actions"><select class="status" aria-label="Situação"></select><button type="button" class="del">Remover</button></div>' +
+        '<input class="note" type="text" placeholder="Anotação (ex.: falar com a dona sábado)" aria-label="Anotação">';
+      card.querySelector(".name").textContent = l.nome;
+      card.querySelector(".meta").textContent = l.tipo + " · " + (l.bairro || "") + " · " + fmtTel(l.tel) + (l.quando ? " · enviado em " + l.quando.split("-").reverse().join("/") : "");
+      var tag = card.querySelector(".tag"); tag.textContent = cell ? "Celular" : "Fixo"; if (!cell) tag.classList.add("fixo");
+      var acts = card.querySelector(".actions");
+      var wa = document.createElement("a"); wa.className = "btn b-wa"; wa.target = "_blank"; wa.rel = "noopener";
+      wa.textContent = cell ? "Abrir no WhatsApp" : "Tentar WhatsApp";
+      wa.href = "https://wa.me/55" + digits(l.tel) + "?text=" + encodeURIComponent(msgFor(l));
+      wa.addEventListener("click", function () { if (l.status === "novo") { l.status = "enviado"; l.quando = today(); save(); setTimeout(function () { draw(); stats(); }, 300); } });
+      acts.appendChild(wa);
+      if (!cell) { var call = document.createElement("a"); call.className = "btn b-call"; call.href = "tel:+55" + digits(l.tel); call.textContent = "Ligar"; acts.appendChild(call); }
+      var pv = document.createElement("a"); pv.className = "btn b-ghost"; pv.href = "estudio?loja=" + encodeURIComponent(l.nome); pv.textContent = "Gerar prévia"; acts.appendChild(pv);
+      var sel = card.querySelector(".status");
+      ST.forEach(function (s) { var o = document.createElement("option"); o.value = s[0]; o.textContent = s[1]; sel.appendChild(o); });
+      sel.value = l.status;
+      sel.addEventListener("change", function () { l.status = sel.value; if (l.status !== "novo" && !l.quando) l.quando = today(); save(); draw(); stats(); });
+      var note = card.querySelector(".note"); note.value = l.nota || "";
+      note.addEventListener("input", function () { l.nota = note.value; save(); });
+      card.querySelector(".del").addEventListener("click", function () {
+        if (this.dataset.ok) { st.leads = st.leads.filter(function (x) { return x !== l; }); save(); draw(); stats(); }
+        else { this.dataset.ok = "1"; this.textContent = "Toque de novo para remover"; }
+      });
+      list.appendChild(card);
+    });
+  }
+  function stats() {
+    var c = function (f) { return st.leads.filter(f).length; };
+    $("n-hoje").textContent = c(function (l) { return l.quando === today(); });
+    $("n-env").textContent = c(function (l) { return l.status !== "novo"; });
+    $("n-resp").textContent = c(function (l) { return l.status === "respondeu" || l.status === "fechou"; });
+    $("n-fech").textContent = c(function (l) { return l.status === "fechou"; });
+  }
+
+  // adicionar
+  TIPOS.forEach(function (t) { var o = document.createElement("option"); o.textContent = t; $("a-tipo").appendChild(o); });
+  $("a-add").addEventListener("click", function () {
+    var n = $("a-nome").value.trim(), t = digits($("a-tel").value);
+    if (!n || t.length < 10) { $("a-nome").focus(); $("a-add").textContent = "Preencha nome e telefone"; setTimeout(function () { $("a-add").textContent = "Adicionar"; }, 1800); return; }
+    if (t.length > 11 && t.indexOf("55") === 0) t = t.slice(2);
+    st.leads.unshift({ id: "u" + Date.now(), nome: n, tipo: $("a-tipo").value, bairro: $("a-bairro").value.trim(), tel: t, status: "novo", nota: "", quando: null });
+    save(); $("a-nome").value = ""; $("a-tel").value = ""; $("a-bairro").value = ""; draw(); stats();
+  });
+
+  // backup
+  $("csv").addEventListener("click", function () {
+    var rows = [["Empresa", "Tipo", "Bairro", "Telefone", "Situação", "Data", "Anotação"]].concat(st.leads.map(function (l) {
+      var s = ST.filter(function (x) { return x[0] === l.status; })[0];
+      return [l.nome, l.tipo, l.bairro, fmtTel(l.tel), s ? s[1] : l.status, l.quando || "", l.nota || ""];
+    }));
+    var csv = "﻿" + rows.map(function (r) { return r.map(function (v) { return '"' + String(v).replace(/"/g, '""') + '"'; }).join(";"); }).join("\n");
+    var a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv" })); a.download = "prospeccao-curtiba.csv"; document.body.appendChild(a); a.click(); a.remove();
+  });
+
+  drawFilters(); draw(); stats();
+})();
+</script>
+</body>
+</html>
