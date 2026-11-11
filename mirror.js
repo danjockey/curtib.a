@@ -93,7 +93,7 @@
       ctx.fillStyle = "#DFE4E1"; ctx.fillRect(gx, gy, gw, gh);
       if (foto) {
         var s = Math.max(gw / foto.width, gh / foto.height), fw = foto.width * s, fh = foto.height * s;
-        ctx.drawImage(foto, gx + (gw - fw) / 2, gy + (gh - fh) * 0.4, fw, fh);
+        ctx.drawImage(foto, gx + (gw - fw) / 2, gy + (gh - fh) * (d.fotoY == null ? 0.65 : d.fotoY), fw, fh);
       }
       ctx.fillStyle = "rgba(255,255,255,.2)";
       ctx.beginPath(); ctx.moveTo(gx + gw * 0.62, gy); ctx.lineTo(gx + gw * 0.75, gy); ctx.lineTo(gx + gw * 0.15, gy + gh); ctx.lineTo(gx + gw * 0.02, gy + gh); ctx.fill();
